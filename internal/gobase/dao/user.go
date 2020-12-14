@@ -3,13 +3,13 @@ package dao
 import "github.com/fizzse/gobase/internal/gobase/model"
 
 func (d *SampleDao) CreateUser(user *model.User) error {
-	err := d.dbConn.GetConn().Model(user).Create(user).Error
+	err := d.dbConn.Model(user).Create(user).Error
 	return err
 }
 
 func (d *SampleDao) QueryUser(cond *model.User) (*model.User, error) {
 	user := &model.User{}
-	queryFilter := d.dbConn.GetConn().Model(cond)
+	queryFilter := d.dbConn.Model(cond)
 
 	if cond.ID != 0 {
 		queryFilter = queryFilter.Where("id = ?", cond.ID)

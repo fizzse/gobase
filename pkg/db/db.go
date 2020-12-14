@@ -8,6 +8,11 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
+const (
+	MysqlDrive     = "mysql"
+	PostgresDevice = "postgres"
+)
+
 type Config struct {
 	Drive      string `json:"drive" yaml:"drive" yml:"drive"`
 	Address    string `json:"address" yaml:"address" yml:"address"`
@@ -19,19 +24,9 @@ type Config struct {
 	DebugModel bool   `json:"debugModel" yaml:"debugModel" yml:"debugModel"`
 }
 
-type Ctx struct {
-	ctx *gorm.DB
-}
-
-const (
-	MysqlDrive     = "mysql"
-	PostgresDevice = "postgres"
-)
-
-func NewConn(config *Config) (*Ctx, error) {
+func NewConn(config *Config) (*gorm.DB, error) {
 	var db *gorm.DB
 	var err error
-	dbCtx := &Ctx{}
 	switch config.Drive {
 	case MysqlDrive:
 		db, err = NewMysqlConn(config)
@@ -45,11 +40,9 @@ func NewConn(config *Config) (*Ctx, error) {
 		return nil, errors.New("unknown drive")
 	}
 
-	dbCtx.ctx = db
-	dbCtx.ctx.SingularTable(true)
-	dbCtx.ctx.LogMode(config.DebugModel)
-
-	return dbCtx, nil
+	db.SingularTable(true)
+	db.LogMode(config.DebugModel)
+	return db, err
 }
 
 func NewMysqlConn(config *Config) (*gorm.DB, error) {
@@ -60,20 +53,4 @@ func NewMysqlConn(config *Config) (*gorm.DB, error) {
 		config.DbName,
 		config.Charset,
 	))
-}
-
-func (c *Ctx) GetConn() *gorm.DB {
-	return c.ctx
-}
-
-func (c *Ctx) Begin() *gorm.DB {
-	return c.ctx.Begin()
-}
-
-func (c *Ctx) RollBack() *gorm.DB {
-	return c.ctx.Rollback()
-}
-
-func (c *Ctx) Commit() *gorm.DB {
-	return c.ctx.Commit()
 }

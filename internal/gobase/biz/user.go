@@ -7,5 +7,6 @@ type User struct {
 }
 
 func (b *SampleBiz) CreateUser(user *User) (*User, error) {
-	b.daoCtx.CreateUser()
+	// b.daoCtx.CreateUser()
+	return nil, nil
 }

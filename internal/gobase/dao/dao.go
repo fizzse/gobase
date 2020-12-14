@@ -2,7 +2,7 @@ package dao
 
 import (
 	"github.com/fizzse/gobase/internal/gobase/model"
-	"github.com/fizzse/gobase/pkg/db"
+	"github.com/jinzhu/gorm"
 )
 
 type IDao interface {
@@ -11,7 +11,7 @@ type IDao interface {
 }
 
 type SampleDao struct {
-	dbConn *db.Ctx
+	dbConn *gorm.DB
 }
 
 func NewIDao() IDao {
