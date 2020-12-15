@@ -7,8 +7,11 @@ import (
 )
 
 // set
-func (c *RedisClient) SAdd(key string, values ...interface{}) error {
-	conn := c.GetConn()
+func (c *Client) SAdd(key string, values ...interface{}) error {
+	conn, err := c.GetConn()
+	if err != nil {
+		return err
+	}
 	defer conn.Close()
 
 	size := len(values) + 1
@@ -18,7 +21,7 @@ func (c *RedisClient) SAdd(key string, values ...interface{}) error {
 		fields = append(fields, v)
 	}
 
-	_, err := redis.Int64(conn.Do("SADD", fields...))
+	_, err = redis.Int64(conn.Do("SADD", fields...))
 	if err != nil {
 		return err
 	}
@@ -26,10 +29,13 @@ func (c *RedisClient) SAdd(key string, values ...interface{}) error {
 	return nil
 }
 
-func (c *RedisClient) SRem(key string, value interface{}) error {
-	conn := c.GetConn()
+func (c *Client) SRem(key string, value interface{}) error {
+	conn, err := c.GetConn()
+	if err != nil {
+		return err
+	}
 	defer conn.Close()
-	_, err := redis.Int64(conn.Do("SREM", key, value))
+	_, err = redis.Int64(conn.Do("SREM", key, value))
 	if err != nil {
 		return err
 	}
@@ -37,8 +43,11 @@ func (c *RedisClient) SRem(key string, value interface{}) error {
 	return nil
 }
 
-func (c *RedisClient) SCard(key string) (int64, error) {
-	conn := c.GetConn()
+func (c *Client) SCard(key string) (int64, error) {
+	conn, err := c.GetConn()
+	if err != nil {
+		return 0, err
+	}
 	defer conn.Close()
 	reply, err := redis.Int64(conn.Do("SCARD", key))
 	if err != nil {
@@ -48,8 +57,11 @@ func (c *RedisClient) SCard(key string) (int64, error) {
 	return reply, nil
 }
 
-func (c *RedisClient) SMembers(key string) ([]string, error) {
-	conn := c.GetConn()
+func (c *Client) SMembers(key string) ([]string, error) {
+	conn, err := c.GetConn()
+	if err != nil {
+		return nil, err
+	}
 	defer conn.Close()
 	reply, err := redis.Strings(conn.Do("SMEMBERS", key))
 	if err != nil {

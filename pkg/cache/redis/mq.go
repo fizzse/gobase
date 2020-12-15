@@ -26,14 +26,14 @@ type MessageQueue struct {
 	recvTimeout  int                // 获取数据超时时间
 	msgStoreTime int                // 消息持久化时间
 	queueName    string             // 名称 唯一标识
-	entity       *RedisClient       // redis 实例
+	entity       *Client            // redis 实例
 	handelFunc   HandelFunc         // 处理消息函数
 	cancelCtx    context.Context    // 退出控制
 	cancelFunc   context.CancelFunc // 退出控制
 	debugModel   bool               // 调试模式 log打印日志
 }
 
-func NewQueue(name string, workerCount int, handelFunc HandelFunc, entity *RedisClient) *MessageQueue {
+func NewQueue(name string, workerCount int, handelFunc HandelFunc, entity *Client) *MessageQueue {
 	q := &MessageQueue{queueName: name, workerCount: workerCount, handelFunc: handelFunc, entity: entity}
 	if q.recvTimeout == 0 {
 		q.recvTimeout = DefaultTimeout

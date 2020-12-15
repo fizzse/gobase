@@ -7,11 +7,11 @@ import "strconv"
  */
 
 type Counter struct {
-	entity     *RedisClient // redis 实例
+	entity     *Client // redis 实例
 	expireTime int
 }
 
-func NewCounter(expireTime int, entity *RedisClient) *Counter {
+func NewCounter(expireTime int, entity *Client) *Counter {
 	if expireTime == 0 {
 		expireTime = 7 * 24 * 3600 // 默认7天
 	}

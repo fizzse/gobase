@@ -1,14 +1,17 @@
 package main
 
 import (
-	"github.com/fizzse/gobase/pkg/cache/redis"
-	"github.com/fizzse/gobase/pkg/db"
+	"log"
+
+	"github.com/fizzse/gobase/internal/gobase/server"
 )
 
-func main(){
-	redisConfig:=&redis.Config{}
-	redis.NewClient(redisConfig)
+func main() {
+	app, clanFunc, err := server.InitApp()
+	if err != nil {
+		log.Fatal("init app failed: ", err)
+	}
 
-	dbConfig:= &db.Config{}
-	db.NewConn(dbConfig)
+	defer clanFunc()
+	app.RestServer.ListenAndServe()
 }

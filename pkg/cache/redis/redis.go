@@ -1,13 +1,12 @@
 package redis
 
 import (
-	"log"
 	"time"
 
 	"github.com/gomodule/redigo/redis"
 )
 
-func newPool(config *RedisConfig) *redis.Pool {
+func newPool(config *Config) *redis.Pool {
 	server := config.Host + ":" + config.Port
 	return &redis.Pool{
 		MaxIdle:     config.MaxIdle,
@@ -37,21 +36,24 @@ func newPool(config *RedisConfig) *redis.Pool {
 	}
 }
 
-func NewClient(config *RedisConfig) *RedisClient {
-	client := &RedisClient{}
-	client.pool = newPool(config)
-	return client
+func NewClient(config *Config) (redisCtx *Client, clean func(), err error) {
+	redisCli := &Client{}
+	redisCli.pool = newPool(config)
+
+	// 初始化获取一次链接
+	_, err = redisCli.GetConn()
+	return redisCli, redisCli.Close, err
 }
 
-type RedisClient struct {
+type Client struct {
 	pool *redis.Pool
 }
 
-func (c *RedisClient) GetConn() redis.Conn {
+func (c *Client) GetConn() (redis.Conn, error) {
 	conn := c.pool.Get()
-	if conn.Err() != nil {
-		log.Println("RedisClient get conn failed: ", conn.Err())
-	}
+	return conn, conn.Err()
+}
 
-	return conn
+func (c *Client) Close() {
+	c.pool.Close()
 }

@@ -4,7 +4,10 @@ package redis
  * redis 配置
  */
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Config struct {
 	Name        string        `json:"name" env:"REDIS_NAME"`
@@ -63,5 +66,13 @@ func (b *ConfigBuilder) IdleTimeout(idleTimeout time.Duration) *ConfigBuilder {
 }
 
 func (b *ConfigBuilder) Build() (*Config, error) {
+	if b.redisConfig.Host == "" {
+		return nil, fmt.Errorf("redis: host must be set")
+	}
+
+	if b.redisConfig.Port == "" {
+		return nil, fmt.Errorf("redis: port must be set")
+	}
+
 	return b.redisConfig, nil
 }

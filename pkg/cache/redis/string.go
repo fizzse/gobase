@@ -6,8 +6,11 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
-func (c *RedisClient) SetStringEx(key, value string, expire int) error {
-	conn := c.GetConn()
+func (c *Client) SetStringEx(key, value string, expire int) error {
+	conn, err := c.GetConn()
+	if err != nil {
+		return err
+	}
 	defer conn.Close()
 
 	reply, err := redis.String(conn.Do("SET", key, value, "EX", expire))
@@ -21,8 +24,11 @@ func (c *RedisClient) SetStringEx(key, value string, expire int) error {
 	return nil
 }
 
-func (c *RedisClient) SetStringNx(key, value string, expire int) error {
-	conn := c.GetConn()
+func (c *Client) SetStringNx(key, value string, expire int) error {
+	conn, err := c.GetConn()
+	if err != nil {
+		return err
+	}
 	defer conn.Close()
 
 	reply, err := redis.String(conn.Do("SET", key, value, "NX", "EX", expire))
@@ -36,8 +42,11 @@ func (c *RedisClient) SetStringNx(key, value string, expire int) error {
 	return nil
 }
 
-func (c *RedisClient) SetStringNxPx(key, value string, expire int) error {
-	conn := c.GetConn()
+func (c *Client) SetStringNxPx(key, value string, expire int) error {
+	conn, err := c.GetConn()
+	if err != nil {
+		return err
+	}
 	defer conn.Close()
 
 	reply, err := redis.String(conn.Do("SET", key, value, "NX", "PX", expire))
@@ -51,8 +60,11 @@ func (c *RedisClient) SetStringNxPx(key, value string, expire int) error {
 	return nil
 }
 
-func (c *RedisClient) GetString(key string) (string, error) {
-	conn := c.GetConn()
+func (c *Client) GetString(key string) (string, error) {
+	conn, err := c.GetConn()
+	if err != nil {
+		return "", err
+	}
 	defer conn.Close()
 
 	reply, err := redis.String(conn.Do("GET", key))
@@ -63,8 +75,11 @@ func (c *RedisClient) GetString(key string) (string, error) {
 	return reply, nil
 }
 
-func (c *RedisClient) GetBytes(key string) ([]byte, error) {
-	conn := c.GetConn()
+func (c *Client) GetBytes(key string) ([]byte, error) {
+	conn, err := c.GetConn()
+	if err != nil {
+		return nil, err
+	}
 	defer conn.Close()
 
 	reply, err := redis.Bytes(conn.Do("GET", key))
@@ -75,8 +90,11 @@ func (c *RedisClient) GetBytes(key string) ([]byte, error) {
 	return reply, nil
 }
 
-func (c *RedisClient) INCR(key string) (int, error) {
-	conn := c.GetConn()
+func (c *Client) INCR(key string) (int, error) {
+	conn, err := c.GetConn()
+	if err != nil {
+		return 0, err
+	}
 	defer conn.Close()
 
 	reply, err := redis.Int(conn.Do("INCR", key))

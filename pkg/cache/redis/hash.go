@@ -10,8 +10,11 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
-func (c *RedisClient) HGetAll(key string) (map[string]string, error) {
-	conn := c.GetConn()
+func (c *Client) HGetAll(key string) (map[string]string, error) {
+	conn, err := c.GetConn()
+	if err != nil {
+		return nil, err
+	}
 	defer conn.Close()
 
 	v, err := redis.StringMap(conn.Do("HGETALL", key))
@@ -26,8 +29,11 @@ func (c *RedisClient) HGetAll(key string) (map[string]string, error) {
 	return v, nil
 }
 
-func (c *RedisClient) HGet(key string, field string) (string, error) {
-	conn := c.GetConn()
+func (c *Client) HGet(key string, field string) (string, error) {
+	conn, err := c.GetConn()
+	if err != nil {
+		return "", err
+	}
 	defer conn.Close()
 
 	v, err := redis.String(conn.Do("HGET", key, field))
@@ -38,16 +44,22 @@ func (c *RedisClient) HGet(key string, field string) (string, error) {
 	return v, nil
 }
 
-func (c *RedisClient) HSet(key string, fieldKey string, fieldValue interface{}) error {
-	conn := c.GetConn()
+func (c *Client) HSet(key string, fieldKey string, fieldValue interface{}) error {
+	conn, err := c.GetConn()
+	if err != nil {
+		return err
+	}
 	defer conn.Close()
 
-	_, err := redis.Int(conn.Do("HSET", fieldKey, fieldValue))
+	_, err = redis.Int(conn.Do("HSET", fieldKey, fieldValue))
 	return err
 }
 
-func (c *RedisClient) HMSet(key string, fields map[string]interface{}) error {
-	conn := c.GetConn()
+func (c *Client) HMSet(key string, fields map[string]interface{}) error {
+	conn, err := c.GetConn()
+	if err != nil {
+		return err
+	}
 	defer conn.Close()
 
 	size := len(fields)
@@ -58,7 +70,7 @@ func (c *RedisClient) HMSet(key string, fields map[string]interface{}) error {
 		args = append(args, v)
 	}
 
-	_, err := redis.String(conn.Do("HMSET", args...))
+	_, err = redis.String(conn.Do("HMSET", args...))
 	if err != nil {
 		return err
 	}
@@ -66,11 +78,14 @@ func (c *RedisClient) HMSet(key string, fields map[string]interface{}) error {
 	return nil
 }
 
-func (c *RedisClient) HDel(key string, field string) error {
-	conn := c.GetConn()
+func (c *Client) HDel(key string, field string) error {
+	conn, err := c.GetConn()
+	if err != nil {
+		return err
+	}
 	defer conn.Close()
 
-	_, err := redis.Int(conn.Do("HDEL", key, field))
+	_, err = redis.Int(conn.Do("HDEL", key, field))
 	if err != nil {
 		return err
 	}
@@ -78,8 +93,11 @@ func (c *RedisClient) HDel(key string, field string) error {
 	return nil
 }
 
-func (c *RedisClient) HKeys(key string) ([]string, error) {
-	conn := c.GetConn()
+func (c *Client) HKeys(key string) ([]string, error) {
+	conn, err := c.GetConn()
+	if err != nil {
+		return nil, err
+	}
 	defer conn.Close()
 
 	fieldKeys, err := redis.Strings(conn.Do("HKEYS", key))

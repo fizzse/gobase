@@ -24,25 +24,27 @@ type Config struct {
 	DebugModel bool   `json:"debugModel" yaml:"debugModel" yml:"debugModel"`
 }
 
-func NewConn(config *Config) (*gorm.DB, error) {
+func NewConn(config *Config) (*gorm.DB, func(), error) {
 	var db *gorm.DB
 	var err error
 	switch config.Drive {
 	case MysqlDrive:
 		db, err = NewMysqlConn(config)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 
 	case PostgresDevice:
-		return nil, errors.New("unknown drive")
+		return nil, nil, errors.New("unknown drive")
 	default:
-		return nil, errors.New("unknown drive")
+		return nil, nil, errors.New("unknown drive")
 	}
 
 	db.SingularTable(true)
 	db.LogMode(config.DebugModel)
-	return db, err
+	return db, func() {
+		db.Close()
+	}, err
 }
 
 func NewMysqlConn(config *Config) (*gorm.DB, error) {

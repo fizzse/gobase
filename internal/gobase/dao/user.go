@@ -1,13 +1,17 @@
 package dao
 
-import "github.com/fizzse/gobase/internal/gobase/model"
+import (
+	"context"
 
-func (d *SampleDao) CreateUser(user *model.User) error {
+	"github.com/fizzse/gobase/internal/gobase/model"
+)
+
+func (d *SampleDao) CreateUser(ctx context.Context, user *model.User) error {
 	err := d.dbConn.Model(user).Create(user).Error
 	return err
 }
 
-func (d *SampleDao) QueryUser(cond *model.User) (*model.User, error) {
+func (d *SampleDao) QueryUser(ctx context.Context, cond *model.User) (*model.User, error) {
 	user := &model.User{}
 	queryFilter := d.dbConn.Model(cond)
 
