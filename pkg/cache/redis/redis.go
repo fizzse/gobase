@@ -40,7 +40,7 @@ func NewClient(config *Config) (redisCtx *Client, clean func(), err error) {
 	redisCli := &Client{}
 	redisCli.pool = newPool(config)
 
-	// 初始化获取一次链接
+	// 初始化获取一次链接 来检查redis链接是否正常
 	_, err = redisCli.GetConn()
 	return redisCli, redisCli.Close, err
 }
