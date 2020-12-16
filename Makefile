@@ -14,7 +14,7 @@ SOURCE=cmd/gobase/main.go
 ############################################################
 # 配置信息
 ############################################################
-BINARY_NAME=mqttRoute
+BINARY_NAME=gobase
 BINARY_UNIX=$(BINARY_NAME)
 
 .PHONY: env clean
