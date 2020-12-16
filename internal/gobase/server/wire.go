@@ -11,5 +11,5 @@ import (
 )
 
 func InitApp() (*App, func(), error) {
-	panic(wire.Build(dao.Provider, biz.Provider, rest.Provider, NewApp))
+	panic(wire.Build(Provider, dao.Provider, biz.Provider, rest.Provider, NewApp))
 }

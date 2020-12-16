@@ -24,8 +24,11 @@ func initRouter(bizCtx biz.Biz) *gin.Engine {
 }
 
 func New(cfg *loader.RestConfig, bizCtx biz.Biz) (*http.Server, error) {
-	route := initRouter(bizCtx)
+	if !cfg.DebugModel {
+		gin.SetMode(gin.ReleaseMode)
+	}
 
+	route := initRouter(bizCtx)
 	addr := fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)
 	srv := &http.Server{
 		Addr:    addr,
