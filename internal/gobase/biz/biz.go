@@ -6,10 +6,9 @@ import (
 
 	"github.com/fizzse/gobase/internal/gobase/dao"
 	"github.com/gin-gonic/gin"
-	"github.com/google/wire"
 )
 
-var Provider = wire.NewSet(New)
+//var Provider = wire.NewSet(New)
 
 type GinBiz interface {
 	Ping(ginCtx *gin.Context)

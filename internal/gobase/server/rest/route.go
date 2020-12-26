@@ -5,12 +5,16 @@ import (
 	"net/http"
 
 	"github.com/fizzse/gobase/internal/gobase/biz"
-	"github.com/fizzse/gobase/pkg/loader"
 	"github.com/gin-gonic/gin"
-	"github.com/google/wire"
 )
 
-var Provider = wire.NewSet(New, loader.LoadRestConfig)
+//var Provider = wire.NewSet(New, loader.LoadRestConfig)
+
+type Config struct {
+	Host       string `json:"host" yaml:"host"`
+	Port       int    `json:"port" yaml:"port"`
+	DebugModel bool   `json:"debugModel" yaml:"debugModel"`
+}
 
 func initRouter(bizCtx biz.Biz) *gin.Engine {
 	route := gin.Default()
@@ -23,7 +27,7 @@ func initRouter(bizCtx biz.Biz) *gin.Engine {
 	return route
 }
 
-func New(cfg *loader.RestConfig, bizCtx biz.Biz) (*http.Server, error) {
+func New(cfg *Config, bizCtx biz.Biz) (*http.Server, error) {
 	if !cfg.DebugModel {
 		gin.SetMode(gin.ReleaseMode)
 	}

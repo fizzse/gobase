@@ -11,19 +11,19 @@ import (
 	"github.com/fizzse/gobase/internal/gobase/server/rest"
 	"github.com/fizzse/gobase/pkg/cache/redis"
 	"github.com/fizzse/gobase/pkg/db"
-	"github.com/fizzse/gobase/pkg/loader"
+	"github.com/google/wire"
 )
 
 // Injectors from wire.go:
 
 func InitApp() (*App, func(), error) {
-	restConfig := loader.LoadRestConfig()
-	config := loader.LoadDbConfig()
-	gormDB, cleanup, err := db.NewConn(config)
+	config := LoadRestConfig()
+	dbConfig := LoadDbConfig()
+	gormDB, cleanup, err := db.NewConn(dbConfig)
 	if err != nil {
 		return nil, nil, err
 	}
-	redisConfig := loader.LoadRedisConfig()
+	redisConfig := LoadRedisConfig()
 	client, cleanup2, err := redis.NewClient(redisConfig)
 	if err != nil {
 		cleanup()
@@ -42,7 +42,7 @@ func InitApp() (*App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	server, err := rest.New(restConfig, bizBiz)
+	server, err := rest.New(config, bizBiz)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -66,3 +66,11 @@ func InitApp() (*App, func(), error) {
 		cleanup()
 	}, nil
 }
+
+// wire.go:
+
+var (
+	daoProvider  = wire.NewSet(dao.New, db.NewConn, redis.NewClient, LoadDbConfig, LoadRedisConfig)
+	bizProvider  = wire.NewSet(biz.New)
+	restProvider = wire.NewSet(rest.New, LoadRestConfig)
+)

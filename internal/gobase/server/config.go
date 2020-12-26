@@ -1,32 +1,16 @@
-package loader
+package server
 
 import (
+	"github.com/fizzse/gobase/internal/gobase/server/rest"
 	"github.com/fizzse/gobase/pkg/cache/redis"
 	"github.com/fizzse/gobase/pkg/db"
-	"github.com/fizzse/gobase/pkg/logger"
 )
 
-/*
- * 加载配置
- */
-
-type RestConfig struct {
-	Host       string `json:"host" yaml:"host"`
-	Port       int    `json:"port" yaml:"port"`
-	DebugModel bool   `json:"debugModel" yaml:"debugModel"`
-}
-
-func LoadRestConfig() *RestConfig {
-	return &RestConfig{
+func LoadRestConfig() *rest.Config {
+	return &rest.Config{
 		Host:       "0.0.0.0",
 		Port:       8080,
 		DebugModel: true,
-	}
-}
-
-func LoadLoggerConfig() *logger.Config {
-	return &logger.Config{
-		Drive: logger.ZapStdDrive,
 	}
 }
 

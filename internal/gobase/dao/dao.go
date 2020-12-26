@@ -3,16 +3,12 @@ package dao
 import (
 	"context"
 
-	"github.com/fizzse/gobase/pkg/loader"
-
 	"github.com/fizzse/gobase/internal/gobase/model"
 	"github.com/fizzse/gobase/pkg/cache/redis"
-	"github.com/fizzse/gobase/pkg/db"
-	"github.com/google/wire"
 	"github.com/jinzhu/gorm"
 )
 
-var Provider = wire.NewSet(New, db.NewConn, redis.NewClient, loader.LoadDbConfig, loader.LoadRedisConfig)
+//var Provider = wire.NewSet(New, db.NewConn, redis.NewClient, loader.LoadDbConfig, loader.LoadRedisConfig)
 
 type Dao interface {
 	Close()
