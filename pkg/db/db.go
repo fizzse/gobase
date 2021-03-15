@@ -2,57 +2,70 @@ package db
 
 import (
 	"errors"
-	"fmt"
+	"time"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-)
-
-const (
-	MysqlDrive     = "mysql"
-	PostgresDevice = "postgres"
+	"gorm.io/gorm"
 )
 
 type Config struct {
-	Drive      string `json:"drive" yaml:"drive" yml:"drive"`
-	Address    string `json:"address" yaml:"address" yml:"address"`
-	Port       int64  `json:"port" yaml:"port" yml:"port"`
-	User       string `json:"user" yaml:"user" yml:"user"`
-	Password   string `json:"password" yaml:"password" yml:"password"`
-	DbName     string `json:"dbName" yaml:"dbName" yml:"dbName"`
-	Charset    string `json:"charset" yaml:"charset" yml:"charset"`
-	DebugModel bool   `json:"debugModel" yaml:"debugModel" yml:"debugModel"`
+	Drive           string        `json:"drive" yaml:"drive" yml:"drive"`                               // 数据库类型
+	Address         string        `json:"address" yaml:"address" yml:"address"`                         // 地址
+	Port            int64         `json:"port" yaml:"port" yml:"port"`                                  // 端口
+	User            string        `json:"user" yaml:"user" yml:"user"`                                  // 用户
+	Password        string        `json:"password" yaml:"password" yml:"password"`                      // 密码
+	DbName          string        `json:"dbName" yaml:"dbName" yml:"dbName"`                            // 数据库
+	Charset         string        `json:"charset" yaml:"charset" yml:"charset"`                         // 字符集
+	DebugModel      bool          `json:"debugModel" yaml:"debugModel" yml:"debugModel"`                // 调试模式
+	MaxIdleConn     int           `json:"maxIdleConn" yaml:"maxIdleConn" yml:"maxIdleConn"`             // 最大空闲链接
+	MaxOpenConn     int           `json:"maxOpenConn" yaml:"maxOpenConn" yml:"maxOpenConn"`             // 最大打开链接
+	ConnMaxLifetime time.Duration `json:"connMaxLifetime" yaml:"connMaxLifetime" yml:"connMaxLifetime"` // 链接最大复用时间
+	AltHosts        []string      `json:"altHosts" yaml:"altHosts" yml:"altHosts"`                      // 从库
 }
 
-func NewConn(config *Config) (*gorm.DB, func(), error) {
+type DbCtx struct {
+	ctx *gorm.DB
+}
+
+const (
+	MysqlDrive      = "mysql"
+	PostgresDrive   = "postgres"
+	ClickhouseDrive = "clickhouse"
+)
+
+func NewConn(option *Config) (*DbCtx, func(), error) {
 	var db *gorm.DB
 	var err error
-	switch config.Drive {
+	var clean func()
+	dbCtx := &DbCtx{}
+	switch option.Drive {
 	case MysqlDrive:
-		db, err = NewMysqlConn(config)
-		if err != nil {
-			return nil, nil, err
-		}
+		db, clean, err = newMysqlConn(option)
 
-	case PostgresDevice:
+	case ClickhouseDrive:
+		db, clean, err = newClickhouseConn(option)
+
+	case PostgresDrive:
 		return nil, nil, errors.New("unknown drive")
 	default:
 		return nil, nil, errors.New("unknown drive")
 	}
 
-	db.SingularTable(true)
-	db.LogMode(config.DebugModel)
-	return db, func() {
-		db.Close()
-	}, err
+	dbCtx.ctx = db
+	return dbCtx, clean, err
 }
 
-func NewMysqlConn(config *Config) (*gorm.DB, error) {
-	return gorm.Open(config.Drive, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s",
-		config.User,
-		config.Password,
-		fmt.Sprintf("%s:%d", config.Address, config.Port),
-		config.DbName,
-		config.Charset,
-	))
+func (c *DbCtx) GetConn() *gorm.DB {
+	return c.ctx
+}
+
+func (c *DbCtx) Begin() *gorm.DB {
+	return c.ctx.Begin()
+}
+
+func (c *DbCtx) RollBack() *gorm.DB {
+	return c.ctx.Rollback()
+}
+
+func (c *DbCtx) Commit() *gorm.DB {
+	return c.ctx.Commit()
 }

@@ -5,10 +5,8 @@ import (
 
 	"github.com/fizzse/gobase/internal/gobase/model"
 	"github.com/fizzse/gobase/pkg/cache/redis"
-	"github.com/jinzhu/gorm"
+	"github.com/fizzse/gobase/pkg/db"
 )
-
-//var Provider = wire.NewSet(New, db.NewConn, redis.NewClient, loader.LoadDbConfig, loader.LoadRedisConfig)
 
 type Dao interface {
 	Close()
@@ -17,11 +15,11 @@ type Dao interface {
 }
 
 type SampleDao struct {
-	dbConn    *gorm.DB
+	dbConn    *db.DbCtx
 	redisConn *redis.Client
 }
 
-func New(dbConn *gorm.DB, redisConn *redis.Client) (Dao, func(), error) {
+func New(dbConn *db.DbCtx, redisConn *redis.Client) (Dao, func(), error) {
 	daoCtx := &SampleDao{
 		dbConn:    dbConn,
 		redisConn: redisConn,
@@ -31,6 +29,6 @@ func New(dbConn *gorm.DB, redisConn *redis.Client) (Dao, func(), error) {
 }
 
 func (d *SampleDao) Close() {
-	d.dbConn.Close()
+	//d.dbConn.Close()
 	d.redisConn.Close()
 }

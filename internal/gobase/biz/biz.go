@@ -8,8 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//var Provider = wire.NewSet(New)
-
 type GinBiz interface {
 	Ping(ginCtx *gin.Context)
 	CreateUserGin(ginCtx *gin.Context)

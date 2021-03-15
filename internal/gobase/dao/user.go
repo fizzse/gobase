@@ -7,13 +7,13 @@ import (
 )
 
 func (d *SampleDao) CreateUser(ctx context.Context, user *model.User) error {
-	err := d.dbConn.Model(user).Create(user).Error
+	err := d.dbConn.GetConn().Model(user).Create(user).Error
 	return err
 }
 
 func (d *SampleDao) QueryUser(ctx context.Context, cond *model.User) (*model.User, error) {
 	user := &model.User{}
-	queryFilter := d.dbConn.Model(cond)
+	queryFilter := d.dbConn.GetConn().Model(cond)
 
 	if cond.ID != 0 {
 		queryFilter = queryFilter.Where("id = ?", cond.ID)
