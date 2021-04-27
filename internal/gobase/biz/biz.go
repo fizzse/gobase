@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/fizzse/gobase/pkg/mq/kafka"
+
 	"github.com/fizzse/gobase/internal/gobase/dao"
 	"github.com/gin-gonic/gin"
 )
@@ -13,11 +15,12 @@ type GinBiz interface {
 	CreateUserGin(ginCtx *gin.Context)
 }
 
-//
 type Biz interface {
 	GinBiz // http server
 	Close()
 	CreateUser(ctx context.Context, user *CreateUserReq) (*UserInfo, error)
+
+	DealMsg(ctx context.Context, msg kafka.Event) error
 }
 
 func New(daoCtx dao.Dao) (Biz, func(), error) {
