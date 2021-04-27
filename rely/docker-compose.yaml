@@ -1,0 +1,44 @@
+version: "3.7"
+
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    network_mode: host
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: s
+    restart: always
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    command: redis-server --requirepass s
+    network_mode: host
+    volumes:
+      - $PWD/redis_data:/data
+    restart: always
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    restart: always
+
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_BROKER_ID=0
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181/kafka
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://172.18.0.1:9092
+      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "2"
+    restart: always

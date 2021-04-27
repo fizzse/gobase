@@ -20,5 +20,5 @@
 - redis
 - kafka
 - etcd
-依赖中间件简单部署：
+- 中间件实例部署 rely/docker-compose.yaml
   
