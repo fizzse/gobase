@@ -1,8 +1,24 @@
 # gobase
 
-http服务 gin+gorm简单封装
-服务监控一般都是使用 promethous, promethous存在push与pull两种方式
-pull的方式相对简单，对外提供http的接口即可。故任何服务暴露一个http的接口都是合理的
-## 
+提供一个简单易用的Golang服务端脚手架，该项目尽可能的包含所有的模块，如果不需要某些模块可自行删除
+
+## 服务端代码一般需要包含如下结构
+- http 在线profile,metric,health check。所以这个模块是必须的
+- grpc
+- mq consumer worker
+- cron
+- db gorm
+- cache redis
+- metric prometheus
+- trace jaeger
+- logger zap
 
 
+## 如何使用
+依赖中间件：
+- mysql
+- redis
+- kafka
+- etcd
+依赖中间件简单部署：
+  
