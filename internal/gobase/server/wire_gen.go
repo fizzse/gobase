@@ -58,7 +58,7 @@ func InitApp() (*App, func(), error) {
 		return nil, nil, err
 	}
 	workerConfig := LoadConsumerConfig()
-	worker, err := consumer.NewWorker(sugaredLogger, workerConfig)
+	worker, err := consumer.NewWorker(sugaredLogger, workerConfig, bizBiz)
 	if err != nil {
 		cleanup4()
 		cleanup3()

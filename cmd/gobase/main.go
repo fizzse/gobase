@@ -15,11 +15,10 @@ func main() {
 	}
 
 	defer cleanFunc()
-
 	if err := app.Run(context.Background()); err != nil {
 		log.Println("recv error: ", err)
 	}
 
 	time.Sleep(2 * time.Second)
-	log.Println("recv error: ", err)
+	log.Println("server graceful exit")
 }

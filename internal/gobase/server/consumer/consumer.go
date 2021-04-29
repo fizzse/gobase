@@ -3,6 +3,8 @@ package consumer
 import (
 	"context"
 
+	"github.com/fizzse/gobase/internal/gobase/biz"
+
 	"go.uber.org/zap"
 
 	"github.com/fizzse/gobase/pkg/mq/kafka"
@@ -22,7 +24,6 @@ type WorkerConfig struct {
 	Name        string   `yaml:"name"`
 	BufSize     int      `yaml:"bufSize"`
 	WorkerCount int      `yaml:"workerCount"`
-	//HandleFunc  kafka.Handler `yaml:"-"`
 }
 
 type Worker struct {
@@ -33,14 +34,16 @@ type Worker struct {
 	dataChan    chan kafka.Event
 	bufSize     int
 	workerCount int
-	//handleFunc  kafka.Handler
-	logger *zap.SugaredLogger
+	BizCtx      biz.Biz
+	logger      *zap.SugaredLogger
 }
 
-func NewWorker(logger *zap.SugaredLogger, conf *WorkerConfig) (*Worker, error) {
+func NewWorker(logger *zap.SugaredLogger, conf *WorkerConfig, biz biz.Biz) (*Worker, error) {
 	sub := kafka.NewSubscriber(conf.Topic, conf.Broker, kafka.ConsumerGroup(conf.GroupId))
 	worker := &Worker{
-		logger:      logger,
+		logger: logger,
+		BizCtx: biz,
+
 		name:        conf.Name,
 		topic:       conf.Topic,
 		groupId:     conf.GroupId,
@@ -48,7 +51,6 @@ func NewWorker(logger *zap.SugaredLogger, conf *WorkerConfig) (*Worker, error) {
 		bufSize:     conf.BufSize,
 		dataChan:    make(chan kafka.Event, conf.BufSize),
 		workerCount: conf.WorkerCount,
-		//handleFunc:  conf.HandleFunc,
 	}
 
 	return worker, nil

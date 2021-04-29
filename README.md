@@ -4,15 +4,30 @@
 
 ## 服务端代码一般需要包含如下结构
 - http 在线profile,metric,health check。所以这个模块是必须的
-- grpc (未支持)
-- mq consumer worker
-- cron (未支持)
+- grpc 微服务 (未支持)
+- mq consumer worker 异步处理任务
+- cron 定时任务 (未支持)
 - db gorm
 - cache redis
 - metric prometheus (未支持)
 - trace jaeger (未支持)
 - logger zap
 
+## 代码结构说明
+```
+| - cmd 程序入口
+    | - project/main.go 程序入口
+| - doc API文档
+| - config 配置文件
+| - internal 内部代码包  
+    | - project 
+        | - server 服务注册
+        | - biz 业务层
+        | - dao 转换层 
+        | - model 数据层
+        | - pkg 内部工具包
+| - pkg 可对外的工具包
+```
 
 ## 如何使用
 依赖中间件：
@@ -21,4 +36,3 @@
 - kafka
 - etcd
 - 中间件实例部署 rely/docker-compose.yaml
-  

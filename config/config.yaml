@@ -2,7 +2,7 @@
 # YAML CONFIG
 #############################
 server:
-  name: mqttRoute
+  name: gobase
   restAddr: 0.0.0.0
   restPort: 8096
   rpcAddr: 0.0.0.0
@@ -28,7 +28,7 @@ redis:
   password: 123456
 
 jaeger:
-  agent: 10.0.3.76:6831
-  sampling: http://10.0.3.76:5778/sampling
-  serviceName: mqttRoute
-  LogSpan: true
+  agent: 127.0.0.1:6831
+  sampling: http://127.0.0.1:5778/sampling
+  serviceName: gobase
+  logSpan: false

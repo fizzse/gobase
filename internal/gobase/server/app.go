@@ -23,6 +23,7 @@ import (
 
 func NewApp(logger *zap.SugaredLogger, h *http.Server, worker *consumer.Worker) (app *App, closeFunc func(), err error) {
 	app = &App{
+		logger:         logger,
 		RestServer:     h,
 		ConsumerWorker: worker,
 		Signal:         make(chan os.Signal),
@@ -78,8 +79,8 @@ func (a *App) Run(ctx context.Context) error {
 			}
 		}()
 
-		err := a.ConsumerWorker.Run(ctx, a.bizCtx.DealMsg)
-		err = errors.Wrap(err, "data worker error")
+		err := a.ConsumerWorker.Run(ctx, a.ConsumerWorker.BizCtx.DealMsg)
+		err = errors.Wrap(err, "mq data worker error")
 		return err
 	})
 

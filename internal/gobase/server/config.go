@@ -64,26 +64,29 @@ func LoadRestConfig() *rest.Config {
 func LoadDbConfig() *db.Config {
 	return &db.Config{
 		Drive:    "mysql",
-		Address:  "172.28.47.6",
+		Address:  "127.0.0.1",
 		Port:     3306,
 		User:     "root",
 		Password: "s",
-		DbName:   "gobase",
+		DbName:   "mysql",
 		Charset:  "utf8",
 	}
 }
 
 func LoadRedisConfig() *redis.Config {
 	return &redis.Config{
-		Host:     "172.28.47.6",
+		Host:     "127.0.0.1",
 		Port:     "6379",
 		Password: "s",
 	}
 }
 
 func LoadConsumerConfig() *consumer.WorkerConfig {
-	config := &consumer.WorkerConfig{}
-
+	config := &consumer.WorkerConfig{
+		Broker:      []string{"127.0.0.1:9200"},
+		WorkerCount: 3,
+		Topic:       "hello",
+	}
 	if err := viper.UnmarshalKey("consumer", config); err != nil {
 		log.Printf("viper get: %s config failed %v : use defalut config\n", "consumer", err)
 	}

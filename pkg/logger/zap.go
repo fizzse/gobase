@@ -9,6 +9,11 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
+const (
+	ZapDrive    = "zap"
+	ZapStdDrive = "zapStd"
+)
+
 type Config struct {
 	Drive        string
 	Path         string
@@ -18,13 +23,6 @@ type Config struct {
 	MaxFileSize  int
 	Level        int8
 }
-
-//var Provider = wire.NewSet(New, loader.LoadLoggerConfig())
-
-const (
-	ZapDrive    = "zap"
-	ZapStdDrive = "zapStd"
-)
 
 func New(cfg *Config) (*zap.SugaredLogger, error) {
 	switch cfg.Drive {

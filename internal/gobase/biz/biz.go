@@ -10,6 +10,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// 显示声明 SampleBiz 实现了Biz
+var _ Biz = &SampleBiz{}
+
+// GinBiz http interface
 type GinBiz interface {
 	Ping(ginCtx *gin.Context)
 	CreateUserGin(ginCtx *gin.Context)
@@ -23,6 +27,7 @@ type Biz interface {
 	DealMsg(ctx context.Context, msg kafka.Event) error
 }
 
+// New 返回抽象的接口
 func New(daoCtx dao.Dao) (Biz, func(), error) {
 	bizCtx := &SampleBiz{
 		daoCtx: daoCtx,

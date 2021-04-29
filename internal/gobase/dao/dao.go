@@ -8,6 +8,9 @@ import (
 	"github.com/fizzse/gobase/pkg/db"
 )
 
+// 显示声明 SampleDao 实现 Dao
+var _ Dao = &SampleDao{}
+
 type Dao interface {
 	Close()
 	CreateUser(ctx context.Context, user *model.User) error
@@ -19,6 +22,7 @@ type SampleDao struct {
 	redisConn *redis.Client
 }
 
+// New 返回抽象的接口
 func New(dbConn *db.DbCtx, redisConn *redis.Client) (Dao, func(), error) {
 	daoCtx := &SampleDao{
 		dbConn:    dbConn,
@@ -30,5 +34,5 @@ func New(dbConn *db.DbCtx, redisConn *redis.Client) (Dao, func(), error) {
 
 func (d *SampleDao) Close() {
 	//d.dbConn.Close()
-	d.redisConn.Close()
+	//d.redisConn.Close()
 }
