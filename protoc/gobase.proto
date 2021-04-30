@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package router;
+option go_package = "./gopkg";
+
+import "google/protobuf/wrappers.proto";
+
+message Person {
+  google.protobuf.DoubleValue age = 1;
+}
+
+message SayHelloReq {
+  string name = 1;
+}
+
+message SayHelloRes {
+  string reply = 1;
+}
+
+service Gobase {
+  rpc SendMsgToDevice(SayHelloReq) returns (SayHelloRes) {}
+}

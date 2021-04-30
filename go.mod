@@ -11,8 +11,10 @@ require (
 	github.com/spf13/viper v1.7.1
 	go.uber.org/zap v1.16.0
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
+	google.golang.org/grpc v1.37.0
+	google.golang.org/protobuf v1.26.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gorm.io/driver/clickhouse v0.1.0
-	gorm.io/driver/mysql v1.0.5
-	gorm.io/gorm v1.21.8
+	gorm.io/driver/mysql v1.0.6
+	gorm.io/gorm v1.21.9
 )

@@ -4,6 +4,8 @@ import (
 	"log"
 	"os"
 
+	"github.com/fizzse/gobase/internal/gobase/server/rpc"
+
 	"github.com/fizzse/gobase/internal/gobase/server/consumer"
 	"github.com/fizzse/gobase/internal/gobase/server/rest"
 	"github.com/fizzse/gobase/pkg/cache/redis"
@@ -57,6 +59,14 @@ func LoadRestConfig() *rest.Config {
 	return &rest.Config{
 		Host:       "0.0.0.0",
 		Port:       8080,
+		DebugModel: true,
+	}
+}
+
+func LoadGrpcConfig() *rpc.Config {
+	return &rpc.Config{
+		Host:       "0.0.0.0",
+		Port:       8081,
 		DebugModel: true,
 	}
 }

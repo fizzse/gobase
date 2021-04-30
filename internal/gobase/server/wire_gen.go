@@ -10,6 +10,7 @@ import (
 	"github.com/fizzse/gobase/internal/gobase/dao"
 	"github.com/fizzse/gobase/internal/gobase/server/consumer"
 	"github.com/fizzse/gobase/internal/gobase/server/rest"
+	"github.com/fizzse/gobase/internal/gobase/server/rpc"
 	"github.com/fizzse/gobase/pkg/cache/redis"
 	"github.com/fizzse/gobase/pkg/db"
 	"github.com/fizzse/gobase/pkg/logger"
@@ -57,6 +58,15 @@ func InitApp() (*App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
+	rpcConfig := LoadGrpcConfig()
+	rpcServer, err := rpc.New(rpcConfig, bizBiz)
+	if err != nil {
+		cleanup4()
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
 	workerConfig := LoadConsumerConfig()
 	worker, err := consumer.NewWorker(sugaredLogger, workerConfig, bizBiz)
 	if err != nil {
@@ -66,7 +76,7 @@ func InitApp() (*App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	app, cleanup5, err := NewApp(sugaredLogger, server, worker)
+	app, cleanup5, err := NewApp(sugaredLogger, server, rpcServer, worker)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -91,6 +101,7 @@ var (
 	redisProvider    = wire.NewSet(redis.NewClient, LoadRedisConfig)
 	daoProvider      = wire.NewSet(dao.New)
 	bizProvider      = wire.NewSet(biz.New)
+	grpcProvider     = wire.NewSet(rpc.New, LoadGrpcConfig)
 	restProvider     = wire.NewSet(rest.New, LoadRestConfig)
 	consumerProvider = wire.NewSet(consumer.NewWorker, LoadConsumerConfig)
 )

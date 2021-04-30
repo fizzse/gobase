@@ -9,22 +9,22 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/fizzse/gobase/internal/gobase/biz"
-
 	"go.uber.org/zap"
-
 	"golang.org/x/sync/errgroup"
 
+	"github.com/fizzse/gobase/internal/gobase/biz"
 	"github.com/fizzse/gobase/internal/gobase/server/consumer"
+	"github.com/fizzse/gobase/internal/gobase/server/rpc"
 	"github.com/pkg/errors"
 )
 
 // 日志
 
-func NewApp(logger *zap.SugaredLogger, h *http.Server, worker *consumer.Worker) (app *App, closeFunc func(), err error) {
+func NewApp(logger *zap.SugaredLogger, h *http.Server, g *rpc.Server, worker *consumer.Worker) (app *App, closeFunc func(), err error) {
 	app = &App{
 		logger:         logger,
 		RestServer:     h,
+		GrpcServer:     g,
 		ConsumerWorker: worker,
 		Signal:         make(chan os.Signal),
 	}
@@ -38,9 +38,11 @@ func NewApp(logger *zap.SugaredLogger, h *http.Server, worker *consumer.Worker) 
 }
 
 type App struct {
-	logger         *zap.SugaredLogger
-	bizCtx         biz.Biz
-	RestServer     *http.Server     // http server
+	logger *zap.SugaredLogger
+	bizCtx biz.Biz
+
+	RestServer     *http.Server // http server
+	GrpcServer     *rpc.Server
 	ConsumerWorker *consumer.Worker //
 	Signal         chan os.Signal   // 监听信号 TODO grpc server
 }
@@ -67,6 +69,20 @@ func (a *App) Run(ctx context.Context) error {
 
 		err := a.RestServer.ListenAndServe()
 		err = errors.Wrap(err, "rest error")
+		return err
+	})
+
+	// grpc server
+	wg.Go(func() error {
+		go func() {
+			select {
+			case <-ctx.Done():
+				a.GrpcServer.Stop()
+			}
+		}()
+
+		err := a.GrpcServer.Run()
+		err = errors.Wrap(err, "grpc server error")
 		return err
 	})
 

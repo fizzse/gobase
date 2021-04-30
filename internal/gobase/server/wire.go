@@ -8,6 +8,7 @@ import (
 	"github.com/fizzse/gobase/internal/gobase/dao"
 	"github.com/fizzse/gobase/internal/gobase/server/consumer"
 	"github.com/fizzse/gobase/internal/gobase/server/rest"
+	"github.com/fizzse/gobase/internal/gobase/server/rpc"
 	"github.com/fizzse/gobase/pkg/cache/redis"
 	"github.com/fizzse/gobase/pkg/db"
 	"github.com/fizzse/gobase/pkg/logger"
@@ -20,6 +21,7 @@ var (
 	redisProvider    = wire.NewSet(redis.NewClient, LoadRedisConfig)
 	daoProvider      = wire.NewSet(dao.New)
 	bizProvider      = wire.NewSet(biz.New)
+	grpcProvider     = wire.NewSet(rpc.New, LoadGrpcConfig)
 	restProvider     = wire.NewSet(rest.New, LoadRestConfig)
 	consumerProvider = wire.NewSet(consumer.NewWorker, LoadConsumerConfig)
 )
@@ -32,5 +34,6 @@ func InitApp() (*App, func(), error) {
 		daoProvider,
 		bizProvider,
 		restProvider,
+		grpcProvider,
 		consumerProvider, NewApp))
 }
