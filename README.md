@@ -4,12 +4,12 @@
 
 ## 服务端代码一般需要包含如下结构
 - http 在线profile,metric,health check。所以这个模块是必须的
-- grpc 微服务 (未支持)
+- grpc 微服务 
 - mq consumer worker 异步处理任务
 - cron 定时任务 (未支持)
 - db gorm
 - cache redis
-- metric prometheus (未支持)
+- metric prometheus 
 - trace jaeger (未支持)
 - logger zap
 
