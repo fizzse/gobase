@@ -31,7 +31,16 @@ type Biz interface {
 }
 
 // New 返回抽象的接口
-func New(daoCtx dao.Dao) (Biz, func(), error) {
+//func New(daoCtx dao.Dao) (Biz, func(), error) {
+//	bizCtx := &SampleBiz{
+//		daoCtx: daoCtx,
+//	}
+//
+//	return bizCtx, bizCtx.Close, nil
+//}
+
+// NewInstance 返回具体实例
+func NewInstance(daoCtx *dao.SampleDao) (*SampleBiz, func(), error) {
 	bizCtx := &SampleBiz{
 		daoCtx: daoCtx,
 	}
@@ -40,7 +49,8 @@ func New(daoCtx dao.Dao) (Biz, func(), error) {
 }
 
 type SampleBiz struct {
-	daoCtx                           dao.Dao
+	//daoCtx                           dao.Dao
+	daoCtx                           *dao.SampleDao
 	pbBase.UnimplementedGobaseServer // FIXME 默认实现所有api
 }
 

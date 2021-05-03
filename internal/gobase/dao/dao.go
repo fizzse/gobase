@@ -24,6 +24,11 @@ type SampleDao struct {
 
 // New 返回抽象的接口
 func New(dbConn *db.DbCtx, redisConn *redis.Client) (Dao, func(), error) {
+	return NewInstance(dbConn, redisConn)
+}
+
+// NewInstance 返回实例
+func NewInstance(dbConn *db.DbCtx, redisConn *redis.Client) (*SampleDao, func(), error) {
 	daoCtx := &SampleDao{
 		dbConn:    dbConn,
 		redisConn: redisConn,

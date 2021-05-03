@@ -20,14 +20,14 @@ type Config struct {
 	DebugModel bool   `json:"debugModel" yaml:"debugModel"`
 }
 
-func New(cfg *Config, bizCtx biz.Biz) (*Server, error) {
+func New(cfg *Config, bizCtx *biz.SampleBiz) (*Server, error) {
 	lis, err := net.Listen("tcp", fmt.Sprintf("%s:%d", cfg.Host, cfg.Port))
 	if err != nil {
 		return nil, err
 	}
 
 	entity := grpc.NewServer()
-	gopkg.RegisterGobaseServer(entity, &biz.SampleBiz{})
+	gopkg.RegisterGobaseServer(entity, bizCtx)
 	return &Server{Entity: entity, Listen: lis}, err
 }
 

@@ -22,7 +22,7 @@ type Config struct {
 	DebugModel bool   `json:"debugModel" yaml:"debugModel"`
 }
 
-func New(cfg *Config, bizCtx biz.Biz) (*http.Server, error) {
+func New(cfg *Config, bizCtx *biz.SampleBiz) (*http.Server, error) {
 	if !cfg.DebugModel {
 		gin.SetMode(gin.ReleaseMode)
 	}

@@ -38,7 +38,7 @@ type Worker struct {
 	logger      *zap.SugaredLogger
 }
 
-func NewWorker(logger *zap.SugaredLogger, conf *WorkerConfig, biz biz.Biz) (*Worker, error) {
+func NewWorker(logger *zap.SugaredLogger, conf *WorkerConfig, biz *biz.SampleBiz) (*Worker, error) {
 	sub := kafka.NewSubscriber(conf.Topic, conf.Broker, kafka.ConsumerGroup(conf.GroupId))
 	worker := &Worker{
 		logger: logger,

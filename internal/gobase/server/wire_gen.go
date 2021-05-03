@@ -37,20 +37,20 @@ func InitApp() (*App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	daoDao, cleanup3, err := dao.New(dbCtx, client)
+	sampleDao, cleanup3, err := dao.NewInstance(dbCtx, client)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	bizBiz, cleanup4, err := biz.New(daoDao)
+	sampleBiz, cleanup4, err := biz.NewInstance(sampleDao)
 	if err != nil {
 		cleanup3()
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	server, err := rest.New(restConfig, bizBiz)
+	server, err := rest.New(restConfig, sampleBiz)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -59,7 +59,7 @@ func InitApp() (*App, func(), error) {
 		return nil, nil, err
 	}
 	rpcConfig := LoadGrpcConfig()
-	rpcServer, err := rpc.New(rpcConfig, bizBiz)
+	rpcServer, err := rpc.New(rpcConfig, sampleBiz)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -68,7 +68,7 @@ func InitApp() (*App, func(), error) {
 		return nil, nil, err
 	}
 	workerConfig := LoadConsumerConfig()
-	worker, err := consumer.NewWorker(sugaredLogger, workerConfig, bizBiz)
+	worker, err := consumer.NewWorker(sugaredLogger, workerConfig, sampleBiz)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -99,8 +99,8 @@ var (
 	logProvider      = wire.NewSet(logger.New, LoadLoggerConfig)
 	dbProvider       = wire.NewSet(db.NewConn, LoadDbConfig)
 	redisProvider    = wire.NewSet(redis.NewClient, LoadRedisConfig)
-	daoProvider      = wire.NewSet(dao.New)
-	bizProvider      = wire.NewSet(biz.New)
+	daoProvider      = wire.NewSet(dao.NewInstance)
+	bizProvider      = wire.NewSet(biz.NewInstance)
 	grpcProvider     = wire.NewSet(rpc.New, LoadGrpcConfig)
 	restProvider     = wire.NewSet(rest.New, LoadRestConfig)
 	consumerProvider = wire.NewSet(consumer.NewWorker, LoadConsumerConfig)
