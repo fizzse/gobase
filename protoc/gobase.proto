@@ -11,6 +11,8 @@ message Person {
 
 message SayHelloReq {
   string name = 1;
+  optional string age = 2;
+  optional int32 pageSize = 3 ;
 }
 
 message SayHelloRes {
