@@ -11,8 +11,8 @@ var (
 	password = "s"
 )
 
-func initTestClient() *RedisClient {
-	testClient := NewClient(&RedisConfig{
+func initTestClient() *Client {
+	testClient, _, _ := NewClient(&Config{
 		Host:     host,
 		Port:     port,
 		Password: password,
