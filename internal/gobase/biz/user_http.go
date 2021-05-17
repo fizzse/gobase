@@ -9,20 +9,25 @@ import (
 )
 
 func (b *SampleBiz) PingGin(c *gin.Context) {
-	c.String(http.StatusOK, "pong...")
+	h := b.newRestHandler(c)
+	defer h.done()
+
+	h.Data = "pong..."
 }
 
 func (b *SampleBiz) CreateUserGin(c *gin.Context) {
+	h := b.newRestHandler(c)
+	defer h.done()
+
 	req := &pbBasev1.CreateUserReq{}
-	if err := c.Bind(req); err != nil {
-		c.Status(http.StatusBadRequest)
+	h.err = c.Bind(req)
+	h.req = req
+
+	if h.err != nil {
+		h.Code = http.StatusBadRequest
 		return
 	}
 
-	res, err := b.CreateUser(c.Request.Context(), req)
-	if err != nil {
-
-	}
-
-	c.JSON(http.StatusOK, res)
+	h.Data, h.err = b.CreateUser(c.Request.Context(), req)
+	return
 }

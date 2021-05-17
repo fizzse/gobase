@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -22,7 +23,7 @@ func NewMysqlConn(config *MysqlCfg) (*MysqlCtx, func(), error) {
 }
 
 func newMysqlConn(option *Config) (*gorm.DB, func(), error) {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=true&loc=Local",
 		option.User,
 		option.Password,
 		fmt.Sprintf("%s:%d", option.Address, option.Port),
@@ -33,6 +34,10 @@ func newMysqlConn(option *Config) (*gorm.DB, func(), error) {
 	conn, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, nil, err
+	}
+
+	if option.DebugModel {
+		conn = conn.Debug()
 	}
 
 	sqlDb, err := conn.DB()

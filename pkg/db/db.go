@@ -8,16 +8,17 @@ import (
 )
 
 type Config struct {
-	Drive           string        `json:"drive" yaml:"drive" yml:"drive"`                               // 数据库类型
-	Address         string        `json:"address" yaml:"address" yml:"address"`                         // 地址
-	Port            int64         `json:"port" yaml:"port" yml:"port"`                                  // 端口
-	User            string        `json:"user" yaml:"user" yml:"user"`                                  // 用户
-	Password        string        `json:"password" yaml:"password" yml:"password"`                      // 密码
-	DbName          string        `json:"dbName" yaml:"dbName" yml:"dbName"`                            // 数据库
-	Charset         string        `json:"charset" yaml:"charset" yml:"charset"`                         // 字符集
-	DebugModel      bool          `json:"debugModel" yaml:"debugModel" yml:"debugModel"`                // 调试模式
-	MaxIdleConn     int           `json:"maxIdleConn" yaml:"maxIdleConn" yml:"maxIdleConn"`             // 最大空闲链接
-	MaxOpenConn     int           `json:"maxOpenConn" yaml:"maxOpenConn" yml:"maxOpenConn"`             // 最大打开链接
+	Drive           string        `json:"drive" yaml:"drive" yml:"drive"`                   // 数据库类型
+	Address         string        `json:"address" yaml:"address" yml:"address"`             // 地址
+	Port            int64         `json:"port" yaml:"port" yml:"port"`                      // 端口
+	User            string        `json:"user" yaml:"user" yml:"user"`                      // 用户
+	Password        string        `json:"password" yaml:"password" yml:"password"`          // 密码
+	DbName          string        `json:"dbName" yaml:"dbName" yml:"dbName"`                // 数据库
+	Charset         string        `json:"charset" yaml:"charset" yml:"charset"`             // 字符集
+	DebugModel      bool          `json:"debugModel" yaml:"debugModel" yml:"debugModel"`    // 调试模式
+	MaxIdleConn     int           `json:"maxIdleConn" yaml:"maxIdleConn" yml:"maxIdleConn"` // 最大空闲链接
+	MaxOpenConn     int           `json:"maxOpenConn" yaml:"maxOpenConn" yml:"maxOpenConn"` // 最大打开链接
+	ParseTime       bool          `json:"parseTime" yaml:"parseTime"`
 	ConnMaxLifetime time.Duration `json:"connMaxLifetime" yaml:"connMaxLifetime" yml:"connMaxLifetime"` // 链接最大复用时间
 	AltHosts        []string      `json:"altHosts" yaml:"altHosts" yml:"altHosts"`                      // 从库
 }

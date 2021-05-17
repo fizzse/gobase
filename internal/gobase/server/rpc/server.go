@@ -4,6 +4,11 @@ import (
 	"fmt"
 	"net"
 
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
+
 	"github.com/fizzse/gobase/internal/gobase/biz"
 	pbBasev1 "github.com/fizzse/gobase/protoc/v1"
 
@@ -26,7 +31,14 @@ func New(cfg *Config, bizCtx *biz.SampleBiz) (*Server, func(), error) {
 		return nil, nil, err
 	}
 
-	entity := grpc.NewServer()
+	entity := grpc.NewServer(
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+			grpc_recovery.UnaryServerInterceptor(),
+			grpc_ctxtags.UnaryServerInterceptor(),
+			grpc_opentracing.UnaryServerInterceptor(),
+			bizCtx.GrpcLogger(bizCtx.Logger()),
+		)))
+
 	pbBasev1.RegisterGobaseServer(entity, bizCtx)
 
 	server := &Server{Entity: entity, Listen: lis}

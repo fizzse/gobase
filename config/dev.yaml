@@ -1,34 +1,41 @@
 ﻿#############################
 # YAML CONFIG
 #############################
-server:
-  name: gobase
-  restAddr: 0.0.0.0
-  restPort: 8096
-  rpcAddr: 0.0.0.0
-  rpcPort: 8095
+rest:
+  name: gobse
+  host: 0.0.0.0
+  port: 8080
+
+grpc:
+  name: gobse
+  host: 0.0.0.0
+  port: 8081
 
 logger:
   drive: zap_std
   path: log
   file: server.log
-  level: 1
+  level: 0
 
 mysql:
-  name: config
-  host: 127.0.0.1
+  drive: mysql
+  address: 127.0.0.1
   port: 3306
   user: root
   password: s
-  db: config
+  dbName: gobase
+  debugModel: true
+
 
 redis:
   host: 127.0.0.1
-  port: 10080
-  password: 123456
+  port: 6379
+  password: s
 
 jaeger:
   agent: 127.0.0.1:6831
   sampling: http://127.0.0.1:5778/sampling
   serviceName: gobase
-  logSpan: false
+  logSpan: true
+  type: probabilistic
+  param: 1

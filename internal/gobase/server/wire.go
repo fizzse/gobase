@@ -17,15 +17,15 @@ import (
 )
 
 var (
-	logProvider      = wire.NewSet(logger.New, LoadLoggerConfig)
-	traceProvider    = wire.NewSet(trace.New, LoadTraceConfig)
-	dbProvider       = wire.NewSet(db.NewConn, LoadDbConfig)
-	redisProvider    = wire.NewSet(redis.NewClient, LoadRedisConfig)
+	logProvider      = wire.NewSet(logger.New, loadLoggerConfig)
+	traceProvider    = wire.NewSet(trace.New, loadTraceConfig)
+	dbProvider       = wire.NewSet(db.NewConn, loadDbConfig)
+	redisProvider    = wire.NewSet(redis.NewClient, loadRedisConfig)
 	daoProvider      = wire.NewSet(dao.NewInstance)
 	bizProvider      = wire.NewSet(biz.NewInstance)
-	grpcProvider     = wire.NewSet(rpc.New, LoadGrpcConfig)
-	restProvider     = wire.NewSet(rest.New, LoadRestConfig)
-	consumerProvider = wire.NewSet(consumer.NewWorker, LoadConsumerConfig)
+	grpcProvider     = wire.NewSet(rpc.New, loadGrpcConfig)
+	restProvider     = wire.NewSet(rest.New, loadRestConfig)
+	consumerProvider = wire.NewSet(consumer.NewWorker, loadConsumerConfig)
 )
 
 func InitApp() (*App, func(), error) {

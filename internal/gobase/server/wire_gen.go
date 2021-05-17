@@ -21,13 +21,13 @@ import (
 // Injectors from wire.go:
 
 func InitApp() (*App, func(), error) {
-	config := LoadRestConfig()
-	dbConfig := LoadDbConfig()
+	config := loadRestConfig()
+	dbConfig := loadDbConfig()
 	dbCtx, cleanup, err := db.NewConn(dbConfig)
 	if err != nil {
 		return nil, nil, err
 	}
-	redisConfig := LoadRedisConfig()
+	redisConfig := loadRedisConfig()
 	client, cleanup2, err := redis.NewClient(redisConfig)
 	if err != nil {
 		cleanup()
@@ -39,7 +39,15 @@ func InitApp() (*App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	sampleBiz, cleanup4, err := biz.NewInstance(sampleDao)
+	loggerConfig := loadLoggerConfig()
+	sugaredLogger, err := logger.New(loggerConfig)
+	if err != nil {
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	sampleBiz, cleanup4, err := biz.NewInstance(sampleDao, sugaredLogger)
 	if err != nil {
 		cleanup3()
 		cleanup2()
@@ -54,7 +62,7 @@ func InitApp() (*App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	rpcConfig := LoadGrpcConfig()
+	rpcConfig := loadGrpcConfig()
 	rpcServer, cleanup5, err := rpc.New(rpcConfig, sampleBiz)
 	if err != nil {
 		cleanup4()
@@ -63,17 +71,7 @@ func InitApp() (*App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	loggerConfig := LoadLoggerConfig()
-	sugaredLogger, err := logger.New(loggerConfig)
-	if err != nil {
-		cleanup5()
-		cleanup4()
-		cleanup3()
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	workerConfig := LoadConsumerConfig()
+	workerConfig := loadConsumerConfig()
 	worker, err := consumer.NewWorker(sugaredLogger, workerConfig, sampleBiz)
 	if err != nil {
 		cleanup5()
@@ -83,7 +81,7 @@ func InitApp() (*App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	traceConfig := LoadTraceConfig()
+	traceConfig := loadTraceConfig()
 	tracer, cleanup6, err := trace.New(traceConfig)
 	if err != nil {
 		cleanup5()
@@ -117,13 +115,13 @@ func InitApp() (*App, func(), error) {
 // wire.go:
 
 var (
-	logProvider      = wire.NewSet(logger.New, LoadLoggerConfig)
-	traceProvider    = wire.NewSet(trace.New, LoadTraceConfig)
-	dbProvider       = wire.NewSet(db.NewConn, LoadDbConfig)
-	redisProvider    = wire.NewSet(redis.NewClient, LoadRedisConfig)
+	logProvider      = wire.NewSet(logger.New, loadLoggerConfig)
+	traceProvider    = wire.NewSet(trace.New, loadTraceConfig)
+	dbProvider       = wire.NewSet(db.NewConn, loadDbConfig)
+	redisProvider    = wire.NewSet(redis.NewClient, loadRedisConfig)
 	daoProvider      = wire.NewSet(dao.NewInstance)
 	bizProvider      = wire.NewSet(biz.NewInstance)
-	grpcProvider     = wire.NewSet(rpc.New, LoadGrpcConfig)
-	restProvider     = wire.NewSet(rest.New, LoadRestConfig)
-	consumerProvider = wire.NewSet(consumer.NewWorker, LoadConsumerConfig)
+	grpcProvider     = wire.NewSet(rpc.New, loadGrpcConfig)
+	restProvider     = wire.NewSet(rest.New, loadRestConfig)
+	consumerProvider = wire.NewSet(consumer.NewWorker, loadConsumerConfig)
 )

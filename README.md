@@ -10,8 +10,12 @@
 - db gorm
 - cache redis
 - metric prometheus 
-- trace jaeger (未支持)
+- trace jaeger
 - logger zap
+
+## 配置
+- 读取环境变量ENV_CLUSTER
+- 默认读取 config/dev.yaml
 
 ## 代码结构说明
 ```

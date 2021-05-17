@@ -1,0 +1,41 @@
+﻿#############################
+# YAML CONFIG
+#############################
+rest:
+  name: gobse
+  host: 0.0.0.0
+  port: 8080
+
+grpc:
+  name: gobse
+  host: 0.0.0.0
+  port: 8081
+
+logger:
+  drive: zap_std
+  path: log
+  file: server.log
+  level: 0
+
+mysql:
+  drive: mysql
+  address: 127.0.0.1
+  port: 3306
+  user: root
+  password: s
+  dbName: gobase
+  debugModel: true
+
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+  password: s
+
+jaeger:
+  agent: 127.0.0.1:6831
+  sampling: http://127.0.0.1:5778/sampling
+  serviceName: gobase
+  logSpan: true
+  type: probabilistic
+  param: 1
