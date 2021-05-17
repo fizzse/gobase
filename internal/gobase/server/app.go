@@ -9,6 +9,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/opentracing/opentracing-go"
+
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 
@@ -20,7 +22,9 @@ import (
 
 // 日志
 
-func NewApp(logger *zap.SugaredLogger, h *http.Server, g *rpc.Server, worker *consumer.Worker) (app *App, closeFunc func(), err error) {
+func NewApp(h *http.Server, g *rpc.Server, worker *consumer.Worker, logger *zap.SugaredLogger, tracer opentracing.Tracer) (app *App, closeFunc func(), err error) {
+	_ = tracer
+
 	app = &App{
 		logger:         logger,
 		RestServer:     h,
@@ -39,7 +43,7 @@ func NewApp(logger *zap.SugaredLogger, h *http.Server, g *rpc.Server, worker *co
 
 type App struct {
 	logger *zap.SugaredLogger
-	bizCtx biz.Biz
+	bizCtx biz.SampleBiz
 
 	RestServer     *http.Server // http server
 	GrpcServer     *rpc.Server

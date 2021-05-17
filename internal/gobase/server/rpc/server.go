@@ -5,7 +5,7 @@ import (
 	"net"
 
 	"github.com/fizzse/gobase/internal/gobase/biz"
-	"github.com/fizzse/gobase/protoc/gopkg"
+	pbBasev1 "github.com/fizzse/gobase/protoc/v1"
 
 	"google.golang.org/grpc"
 )
@@ -20,15 +20,17 @@ type Config struct {
 	DebugModel bool   `json:"debugModel" yaml:"debugModel"`
 }
 
-func New(cfg *Config, bizCtx *biz.SampleBiz) (*Server, error) {
+func New(cfg *Config, bizCtx *biz.SampleBiz) (*Server, func(), error) {
 	lis, err := net.Listen("tcp", fmt.Sprintf("%s:%d", cfg.Host, cfg.Port))
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	entity := grpc.NewServer()
-	gopkg.RegisterGobaseServer(entity, bizCtx)
-	return &Server{Entity: entity, Listen: lis}, err
+	pbBasev1.RegisterGobaseServer(entity, bizCtx)
+
+	server := &Server{Entity: entity, Listen: lis}
+	return server, server.Stop, err
 }
 
 type Server struct {

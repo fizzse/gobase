@@ -37,13 +37,13 @@ func New(cfg *Config, bizCtx *biz.SampleBiz) (*http.Server, error) {
 	return srv, nil
 }
 
-func initRouter(bizCtx biz.Biz) *gin.Engine {
+func initRouter(bizCtx *biz.SampleBiz) *gin.Engine {
 	route := gin.Default()
 	v1 := route.Group("/gobase/v1")
 	{
 		v1.Use(ginprom.PromMiddleware(nil))
 
-		v1.GET("/ping", bizCtx.Ping)
+		v1.GET("/ping", bizCtx.PingGin)
 		v1.POST("/users", bizCtx.CreateUserGin)
 	}
 

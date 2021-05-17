@@ -14,18 +14,14 @@ import (
 	"github.com/fizzse/gobase/pkg/cache/redis"
 	"github.com/fizzse/gobase/pkg/db"
 	"github.com/fizzse/gobase/pkg/logger"
+	"github.com/fizzse/gobase/pkg/trace"
 	"github.com/google/wire"
 )
 
 // Injectors from wire.go:
 
 func InitApp() (*App, func(), error) {
-	config := LoadLoggerConfig()
-	sugaredLogger, err := logger.New(config)
-	if err != nil {
-		return nil, nil, err
-	}
-	restConfig := LoadRestConfig()
+	config := LoadRestConfig()
 	dbConfig := LoadDbConfig()
 	dbCtx, cleanup, err := db.NewConn(dbConfig)
 	if err != nil {
@@ -50,7 +46,7 @@ func InitApp() (*App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	server, err := rest.New(restConfig, sampleBiz)
+	server, err := rest.New(config, sampleBiz)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -59,8 +55,18 @@ func InitApp() (*App, func(), error) {
 		return nil, nil, err
 	}
 	rpcConfig := LoadGrpcConfig()
-	rpcServer, err := rpc.New(rpcConfig, sampleBiz)
+	rpcServer, cleanup5, err := rpc.New(rpcConfig, sampleBiz)
 	if err != nil {
+		cleanup4()
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	loggerConfig := LoadLoggerConfig()
+	sugaredLogger, err := logger.New(loggerConfig)
+	if err != nil {
+		cleanup5()
 		cleanup4()
 		cleanup3()
 		cleanup2()
@@ -70,14 +76,27 @@ func InitApp() (*App, func(), error) {
 	workerConfig := LoadConsumerConfig()
 	worker, err := consumer.NewWorker(sugaredLogger, workerConfig, sampleBiz)
 	if err != nil {
+		cleanup5()
 		cleanup4()
 		cleanup3()
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	app, cleanup5, err := NewApp(sugaredLogger, server, rpcServer, worker)
+	traceConfig := LoadTraceConfig()
+	tracer, cleanup6, err := trace.New(traceConfig)
 	if err != nil {
+		cleanup5()
+		cleanup4()
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	app, cleanup7, err := NewApp(server, rpcServer, worker, sugaredLogger, tracer)
+	if err != nil {
+		cleanup6()
+		cleanup5()
 		cleanup4()
 		cleanup3()
 		cleanup2()
@@ -85,6 +104,8 @@ func InitApp() (*App, func(), error) {
 		return nil, nil, err
 	}
 	return app, func() {
+		cleanup7()
+		cleanup6()
 		cleanup5()
 		cleanup4()
 		cleanup3()
@@ -97,6 +118,7 @@ func InitApp() (*App, func(), error) {
 
 var (
 	logProvider      = wire.NewSet(logger.New, LoadLoggerConfig)
+	traceProvider    = wire.NewSet(trace.New, LoadTraceConfig)
 	dbProvider       = wire.NewSet(db.NewConn, LoadDbConfig)
 	redisProvider    = wire.NewSet(redis.NewClient, LoadRedisConfig)
 	daoProvider      = wire.NewSet(dao.NewInstance)

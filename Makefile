@@ -12,7 +12,14 @@ STATIC=-ldflags '-extldflags "-static"'
 
 SOURCE=cmd/gobase/main.go
 WIRE_SOURCE=internal/gobase/server
-PB_SOURCE=protoc
+PB_SOURCE=protoc/v1
+
+buildPb = protoc --experimental_allow_proto3_optional -I .\
+ 			--go_out=paths=source_relative:. \
+ 			--go-grpc_out=paths=source_relative:. \
+ 			--grpc-gateway_out=. \
+ 			./*.proto
+
 ############################################################
 # 配置信息
 ############################################################
@@ -36,7 +43,7 @@ clean:
 	rm -f $(BINARY_NAME)
 
 pb:
-	cd $(PB_SOURCE) && protoc -I . --go-grpc_out=. --go_out=. ./*.proto
+	cd $(PB_SOURCE) && $(buildPb)
 
 wire:
 	cd $(WIRE_SOURCE) && wire

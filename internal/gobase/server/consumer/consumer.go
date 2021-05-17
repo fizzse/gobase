@@ -34,7 +34,7 @@ type Worker struct {
 	dataChan    chan kafka.Event
 	bufSize     int
 	workerCount int
-	BizCtx      biz.Biz
+	BizCtx      *biz.SampleBiz
 	logger      *zap.SugaredLogger
 }
 

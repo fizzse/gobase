@@ -4,13 +4,14 @@ import (
 	"log"
 	"os"
 
-	"github.com/fizzse/gobase/internal/gobase/server/rpc"
-
 	"github.com/fizzse/gobase/internal/gobase/server/consumer"
 	"github.com/fizzse/gobase/internal/gobase/server/rest"
+	"github.com/fizzse/gobase/internal/gobase/server/rpc"
+
 	"github.com/fizzse/gobase/pkg/cache/redis"
 	"github.com/fizzse/gobase/pkg/db"
 	"github.com/fizzse/gobase/pkg/logger"
+	"github.com/fizzse/gobase/pkg/trace"
 	"github.com/spf13/viper"
 )
 
@@ -53,6 +54,10 @@ func LoadLoggerConfig() *logger.Config {
 	}
 
 	return config
+}
+
+func LoadTraceConfig() *trace.Config {
+	return &trace.Config{}
 }
 
 func LoadRestConfig() *rest.Config {

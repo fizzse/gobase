@@ -4,18 +4,23 @@ go 1.16
 
 require (
 	github.com/DeanThompson/ginpprof v0.0.0-20201112072838-007b1e56b2e1
+	github.com/HdrHistogram/hdrhistogram-go v1.1.0 // indirect
 	github.com/chenjiandongx/ginprom v0.0.0-20201217063207-fe11b7f55a35
 	github.com/gin-gonic/gin v1.7.1
 	github.com/go-playground/validator/v10 v10.5.0 // indirect
+	github.com/go-redis/redis/v8 v8.8.2
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/gomodule/redigo v1.8.4
 	github.com/google/wire v0.5.0
 	github.com/json-iterator/go v1.1.11 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
+	github.com/opentracing/opentracing-go v1.1.0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.10.0
 	github.com/segmentio/kafka-go v0.4.15
 	github.com/spf13/viper v1.7.1
+	github.com/uber/jaeger-client-go v2.28.0+incompatible
+	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/ugorji/go v1.2.5 // indirect
 	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b // indirect

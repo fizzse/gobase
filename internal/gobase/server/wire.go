@@ -12,11 +12,13 @@ import (
 	"github.com/fizzse/gobase/pkg/cache/redis"
 	"github.com/fizzse/gobase/pkg/db"
 	"github.com/fizzse/gobase/pkg/logger"
+	"github.com/fizzse/gobase/pkg/trace"
 	"github.com/google/wire"
 )
 
 var (
 	logProvider      = wire.NewSet(logger.New, LoadLoggerConfig)
+	traceProvider    = wire.NewSet(trace.New, LoadTraceConfig)
 	dbProvider       = wire.NewSet(db.NewConn, LoadDbConfig)
 	redisProvider    = wire.NewSet(redis.NewClient, LoadRedisConfig)
 	daoProvider      = wire.NewSet(dao.NewInstance)
@@ -29,6 +31,7 @@ var (
 func InitApp() (*App, func(), error) {
 	panic(wire.Build(
 		logProvider,
+		traceProvider,
 		dbProvider,
 		redisProvider,
 		daoProvider,
