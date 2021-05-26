@@ -21,7 +21,7 @@
 ```
 | - cmd 程序入口
     | - project/main.go 程序入口
-| - doc API文档
+| - docs API文档
 | - config 配置文件
 | - internal 内部代码包  
     | - project 
