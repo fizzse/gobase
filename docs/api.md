@@ -37,7 +37,7 @@
 
 参数名称						                |类型		|出现要求	|描述
 :----						                |:---		|:------	|:---	
-code						                |int		|R			|响应码，代码定义请见“[响应吗说明](https://github.com/ClearGrass/QingDaily/blob/master/doc/code.md)”
+code						                |int		|R			|响应码，代码定义请见“[响应吗说明]”
 msg						                    |string		|R			|描述信息
 timestamp						            |int		|R			|响应时间
 traceId						                |string		|R			|traceId
