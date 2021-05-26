@@ -45,3 +45,4 @@
 - [Uber go 规范](https://github.com/xxjwxc/uber_go_guide_cn)
 - [Effective Go中文版](https://www.kancloud.cn/kancloud/effective/72199)
 - [Go-advice](https://github.com/cristaloleg/go-advice/blob/49798ebacb18acfc70f240bf8609a227f8ac2622/README_ZH.md)
+- [Go-layout](https://github.com/golang-standards/project-layout)
