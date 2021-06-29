@@ -10,7 +10,7 @@ import (
 	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 
 	"github.com/fizzse/gobase/internal/gobase/biz"
-	pbBasev1 "github.com/fizzse/gobase/protoc/v1"
+	pbBasev1 "github.com/fizzse/gobase/protoc/gobase/v1"
 
 	"google.golang.org/grpc"
 )
@@ -41,19 +41,19 @@ func New(cfg *Config, bizCtx *biz.SampleBiz) (*Server, func(), error) {
 
 	pbBasev1.RegisterGobaseServer(entity, bizCtx)
 
-	server := &Server{Entity: entity, Listen: lis}
+	server := &Server{srv: entity, Listen: lis}
 	return server, server.Stop, err
 }
 
 type Server struct {
-	Entity *grpc.Server
+	srv    *grpc.Server
 	Listen net.Listener
 }
 
 func (s *Server) Run() error {
-	return s.Entity.Serve(s.Listen)
+	return s.srv.Serve(s.Listen)
 }
 
 func (s *Server) Stop() {
-	s.Entity.GracefulStop()
+	s.srv.GracefulStop()
 }

@@ -12,13 +12,13 @@ STATIC=-ldflags '-extldflags "-static"'
 
 SOURCE=cmd/gobase/main.go
 WIRE_SOURCE=internal/gobase/server
-PB_SOURCE=protoc/v1
+PB_SOURCE=protoc
 
 buildPb = protoc --experimental_allow_proto3_optional -I .\
  			--go_out=paths=source_relative:. \
  			--go-grpc_out=paths=source_relative:. \
  			--grpc-gateway_out=. \
- 			./*.proto
+ 			gobase/v1/*.proto
 
 ############################################################
 # 配置信息

@@ -3,7 +3,7 @@ package biz
 import (
 	"net/http"
 
-	pbBasev1 "github.com/fizzse/gobase/protoc/v1"
+	pbBasev1 "github.com/fizzse/gobase/protoc/gobase/v1"
 
 	"github.com/gin-gonic/gin"
 )

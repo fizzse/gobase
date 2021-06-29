@@ -1,7 +1,7 @@
 package biz
 
 import (
-	pbBasev1 "github.com/fizzse/gobase/protoc/v1"
+	pbBasev1 "github.com/fizzse/gobase/protoc/gobase/v1"
 	"go.uber.org/zap"
 
 	"github.com/fizzse/gobase/internal/gobase/dao"

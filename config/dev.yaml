@@ -22,15 +22,23 @@ mysql:
   address: 127.0.0.1
   port: 3306
   user: root
-  password: s
-  dbName: gobase
+  password: test
+  dbName: user
   debugModel: true
+  maxIdleConn: 10
+  maxOpenConn: 30
+
 
 
 redis:
-  host: 127.0.0.1
-  port: 6379
+  mode: single
+  single:
+    addr: 127.0.0.1:6379
+  sentinel:
+    masterName: mymaster
+    addrs: ['127.0.0.1:6379']
   password: s
+  dialTimeout: 1s
 
 jaeger:
   agent: 127.0.0.1:6831

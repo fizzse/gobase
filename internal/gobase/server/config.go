@@ -129,11 +129,10 @@ func loadDbConfig() *db.Config {
 }
 
 func loadRedisConfig() *redis.Config {
-	config := &redis.Config{
-		Host:     "127.0.0.1",
-		Port:     "6379",
-		Password: "s",
-	}
+	config := &redis.Config{}
+	config.Mode = redis.ModeSingle
+	config.Single.Addr = "127.0.0.1:6379"
+	config.Password = "s"
 
 	configType := "redis"
 	if err := viper.UnmarshalKey(configType, &config); err != nil {

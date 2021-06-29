@@ -3,7 +3,6 @@ package server
 import (
 	"context"
 	"fmt"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -16,13 +15,14 @@ import (
 
 	"github.com/fizzse/gobase/internal/gobase/biz"
 	"github.com/fizzse/gobase/internal/gobase/server/consumer"
+	"github.com/fizzse/gobase/internal/gobase/server/rest"
 	"github.com/fizzse/gobase/internal/gobase/server/rpc"
 	"github.com/pkg/errors"
 )
 
 // 日志
 
-func NewApp(h *http.Server, g *rpc.Server, worker *consumer.Worker, logger *zap.SugaredLogger, tracer opentracing.Tracer) (app *App, closeFunc func(), err error) {
+func NewApp(h *rest.Server, g *rpc.Server, worker *consumer.Worker, logger *zap.SugaredLogger, tracer opentracing.Tracer) (app *App, closeFunc func(), err error) {
 	_ = tracer
 
 	app = &App{
@@ -45,7 +45,7 @@ type App struct {
 	logger *zap.SugaredLogger
 	bizCtx biz.SampleBiz
 
-	RestServer     *http.Server // http server
+	RestServer     *rest.Server // http server
 	GrpcServer     *rpc.Server
 	ConsumerWorker *consumer.Worker //
 	Signal         chan os.Signal   // 监听信号 TODO grpc server
@@ -66,12 +66,12 @@ func (a *App) Run(ctx context.Context) error {
 			case <-ctx.Done():
 				timeoutCtx, timeoutCancel := context.WithTimeout(context.Background(), 1*time.Second)
 				defer timeoutCancel()
-				_ = a.RestServer.Shutdown(timeoutCtx)
+				_ = a.RestServer.Stop(timeoutCtx)
 				return
 			}
 		}()
 
-		err := a.RestServer.ListenAndServe()
+		err := a.RestServer.Run()
 		err = errors.Wrap(err, "rest error")
 		return err
 	})

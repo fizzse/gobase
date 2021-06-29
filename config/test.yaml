@@ -28,9 +28,14 @@ mysql:
 
 
 redis:
-  host: 127.0.0.1
-  port: 6379
+  mode: single
+  single:
+    addr: 127.0.0.1:6379
+  sentinel:
+    masterName: mymaster
+    addrs: ['127.0.0.1:6379']
   password: s
+  dialTimeout: 1s
 
 jaeger:
   agent: 127.0.0.1:6831

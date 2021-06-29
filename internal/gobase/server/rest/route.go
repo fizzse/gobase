@@ -1,20 +1,17 @@
 package rest
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-
-	"github.com/chenjiandongx/ginprom"
-
 	"github.com/DeanThompson/ginpprof"
+	"github.com/chenjiandongx/ginprom"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/fizzse/gobase/internal/gobase/biz"
 	"github.com/gin-gonic/gin"
 )
-
-//var Provider = wire.NewSet(New, loader.LoadRestConfig)
 
 type Config struct {
 	Host       string `json:"host" yaml:"host"`
@@ -22,7 +19,12 @@ type Config struct {
 	DebugModel bool   `json:"debugModel" yaml:"debugModel"`
 }
 
-func New(cfg *Config, bizCtx *biz.SampleBiz) (*http.Server, error) {
+type Server struct {
+	cfg *Config
+	srv *http.Server
+}
+
+func New(cfg *Config, bizCtx *biz.SampleBiz) (*Server, error) {
 	if !cfg.DebugModel {
 		gin.SetMode(gin.ReleaseMode)
 	}
@@ -34,7 +36,18 @@ func New(cfg *Config, bizCtx *biz.SampleBiz) (*http.Server, error) {
 		Handler: route,
 	}
 
-	return srv, nil
+	server := &Server{cfg: cfg, srv: srv}
+	return server, nil
+}
+
+func (s *Server) Run() (err error) {
+	err = s.srv.ListenAndServe()
+	return err
+}
+
+func (s *Server) Stop(ctx context.Context) (err error) {
+	err = s.srv.Shutdown(ctx)
+	return
 }
 
 func initRouter(bizCtx *biz.SampleBiz) *gin.Engine {
