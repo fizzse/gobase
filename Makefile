@@ -10,21 +10,28 @@ GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 STATIC=-ldflags '-extldflags "-static"'
 
-SOURCE=cmd/gobase/main.go
-WIRE_SOURCE=internal/gobase/server
-PB_SOURCE=protoc
 
-buildPb = protoc --experimental_allow_proto3_optional -I .\
+##############################
+# pb settings
+##############################
+
+PB_PATH =protoc
+PB_FILES = gobase/v1/*.proto
+BUILD_PB_CMD = protoc --experimental_allow_proto3_optional -I .\
  			--go_out=paths=source_relative:. \
  			--go-grpc_out=paths=source_relative:. \
- 			--grpc-gateway_out=. \
- 			gobase/v1/*.proto
+ 			--grpc-gateway_out=. 
 
-############################################################
-# 配置信息
-############################################################
+
+##############################
+# server setting
+##############################
+SOURCE=cmd/gobase/main.go
 BINARY_NAME=baseSrv
 BINARY_UNIX=$(BINARY_NAME)
+# wire setting
+WIRE_SOURCE=internal/gobase/server
+
 
 .PHONY: env clean
 
@@ -34,16 +41,16 @@ env:
 	export GO111MODULE=on GOPROXY=https://goproxy.cn,direct
 
 service: env
-	$(GOBUILD) $(STATIC) -o $(BINARY_NAME) -v $(SOURCE)
+	$(GOBUILD) -o $(BINARY_NAME) -v $(SOURCE)
 
-service-linux:
+service-static: env
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) $(STATIC) -o $(BINARY_NAME) -v $(SOURCE)
 
 clean:
 	rm -f $(BINARY_NAME)
 
 pb:
-	cd $(PB_SOURCE) && $(buildPb)
+	cd $(PB_PATH) && $(BUILD_PB_CMD) $(PB_FILES)
 
 wire:
 	cd $(WIRE_SOURCE) && wire
