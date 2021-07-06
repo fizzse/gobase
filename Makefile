@@ -11,27 +11,34 @@ GOGET=$(GOCMD) get
 STATIC=-ldflags '-extldflags "-static"'
 
 
-##############################
-# pb settings
-##############################
+## wire di 文件
+WIRE_SOURCE=internal/gobase/server
 
-PB_PATH =protoc
-PB_FILES = gobase/v1/*.proto
+## pb 配置
+PB_BASE_DIR=protoc
+PB_FILE_API=gobase/v1/*.proto
+#PB_FILE_ERRCODE=error/v1/*.proto
+PB_GO_FILES=$(shell find protoc -name *.go)
+
+BUILD_PB_CMD_V = protoc --experimental_allow_proto3_optional -I .\
+ 			--go_out=paths=source_relative:. \
+ 			--go-grpc_out=paths=source_relative:. \
+ 			--grpc-gateway_out=. \
+ 			--validate_out=paths=source_relative,lang=go:.
+
 BUILD_PB_CMD = protoc --experimental_allow_proto3_optional -I .\
  			--go_out=paths=source_relative:. \
  			--go-grpc_out=paths=source_relative:. \
- 			--grpc-gateway_out=. 
+ 			--grpc-gateway_out=.
 
-
-##############################
-# server setting
-##############################
+############################################################
+# 配置信息
+############################################################
+## main函数文件
 SOURCE=cmd/gobase/main.go
-BINARY_NAME=baseSrv
-BINARY_UNIX=$(BINARY_NAME)
-# wire setting
-WIRE_SOURCE=internal/gobase/server
 
+BINARY_NAME=goBase
+BINARY_UNIX=$(BINARY_NAME)
 
 .PHONY: env clean
 
@@ -50,7 +57,10 @@ clean:
 	rm -f $(BINARY_NAME)
 
 pb:
-	cd $(PB_PATH) && $(BUILD_PB_CMD) $(PB_FILES)
+	cd $(PB_BASE_DIR) && $(BUILD_PB_CMD) $(PB_FILE_API)
+
+pb-clean:
+	rm $(PB_GO_FILES) -rf
 
 wire:
 	cd $(WIRE_SOURCE) && wire
