@@ -2,6 +2,15 @@
 
 提供一个简单易用的Golang服务端脚手架，该项目尽可能的包含所有的模块，如果不需要某些模块可自行删除
 
+## 如何使用
+- 新建git仓库时以此项目为模板
+- git clone
+- rename project执行命令 (go run rename.go {newname})
+- 编译 make
+- 生成di make wire
+- 生成pb make pb
+- 清理pb make pb-clean
+
 ## 服务端代码一般需要包含如下结构
 - http 在线profile,metric,health check。所以这个模块是必须的
 - grpc 微服务 
