@@ -25,10 +25,11 @@ type Config struct {
 	DebugModel bool   `json:"debugModel" yaml:"debugModel"`
 }
 
-func New(cfg *Config, bizCtx *biz.SampleBiz) (*Server, func(), error) {
+func New(cfg *Config, bizCtx *biz.SampleBiz) (instance *Server, clean func(), err error) {
+	instance = &Server{bizCtx: bizCtx}
 	lis, err := net.Listen("tcp", fmt.Sprintf("%s:%d", cfg.Host, cfg.Port))
 	if err != nil {
-		return nil, nil, err
+		return
 	}
 
 	entity := grpc.NewServer(
@@ -36,18 +37,21 @@ func New(cfg *Config, bizCtx *biz.SampleBiz) (*Server, func(), error) {
 			grpc_recovery.UnaryServerInterceptor(),
 			grpc_ctxtags.UnaryServerInterceptor(),
 			grpc_opentracing.UnaryServerInterceptor(),
-			bizCtx.GrpcLogger(bizCtx.Logger()),
+			instance.GrpcLogger(bizCtx.Logger()),
 		)))
 
 	pbBasev1.RegisterGobaseServer(entity, bizCtx)
-
-	server := &Server{srv: entity, Listen: lis}
-	return server, server.Stop, err
+	instance.Listen = lis
+	instance.srv = entity
+	clean = instance.Stop
+	return
 }
 
 type Server struct {
 	srv    *grpc.Server
 	Listen net.Listener
+
+	bizCtx *biz.SampleBiz
 }
 
 func (s *Server) Run() error {

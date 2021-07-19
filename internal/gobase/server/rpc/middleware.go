@@ -1,18 +1,23 @@
-package biz
+package rpc
 
 import (
 	"context"
 	"time"
 
+	"github.com/opentracing/opentracing-go"
+
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
-func (b *SampleBiz) GrpcLogger(logger *zap.SugaredLogger) grpc.UnaryServerInterceptor {
+func (s *Server) GrpcLogger(logger *zap.SugaredLogger) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		logging := logger.Infow
 
 		startTime := time.Now()
+		span, ctx := opentracing.StartSpanFromContext(ctx, info.FullMethod)
+		defer span.Finish()
+
 		resp, err := handler(ctx, req)
 		duration := time.Since(startTime)
 		endTime := time.Now()
@@ -21,6 +26,7 @@ func (b *SampleBiz) GrpcLogger(logger *zap.SugaredLogger) grpc.UnaryServerInterc
 		}
 
 		logging(info.FullMethod,
+			"traceId", span,
 			"req", req,
 			"res", resp,
 			"startTime", startTime,
@@ -33,6 +39,6 @@ func (b *SampleBiz) GrpcLogger(logger *zap.SugaredLogger) grpc.UnaryServerInterc
 	}
 }
 
-func (b *SampleBiz) GrpcTrace() grpc.UnaryServerInterceptor {
+func (s *Server) GrpcTrace() grpc.UnaryServerInterceptor {
 	return nil
 }

@@ -8,6 +8,7 @@ services:
     environment:
       TZ: Asia/Shanghai
       MYSQL_ROOT_PASSWORD: s
+      MYSQL_ROOT_HOST: 127.0.0.1
     restart: always
 
   redis:

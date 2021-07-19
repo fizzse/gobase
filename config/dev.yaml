@@ -22,13 +22,11 @@ mysql:
   address: 127.0.0.1
   port: 3306
   user: root
-  password: test
-  dbName: user
+  password: s
+  dbName: mysql
   debugModel: true
   maxIdleConn: 10
   maxOpenConn: 30
-
-
 
 redis:
   mode: single

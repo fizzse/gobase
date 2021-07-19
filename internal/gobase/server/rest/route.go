@@ -20,24 +20,27 @@ type Config struct {
 }
 
 type Server struct {
-	cfg *Config
-	srv *http.Server
+	cfg    *Config
+	srv    *http.Server
+	bizCtx *biz.SampleBiz
 }
 
-func New(cfg *Config, bizCtx *biz.SampleBiz) (*Server, error) {
+func New(cfg *Config, bizCtx *biz.SampleBiz) (instance *Server, err error) {
 	if !cfg.DebugModel {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	route := initRouter(bizCtx)
+	instance = &Server{cfg: cfg, bizCtx: bizCtx}
+
+	route := instance.initRouter(bizCtx)
 	addr := fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)
 	srv := &http.Server{
 		Addr:    addr,
 		Handler: route,
 	}
 
-	server := &Server{cfg: cfg, srv: srv}
-	return server, nil
+	instance.srv = srv
+	return
 }
 
 func (s *Server) Run() (err error) {
@@ -50,14 +53,14 @@ func (s *Server) Stop(ctx context.Context) (err error) {
 	return
 }
 
-func initRouter(bizCtx *biz.SampleBiz) *gin.Engine {
+func (s *Server) initRouter(bizCtx *biz.SampleBiz) *gin.Engine {
 	route := gin.Default()
 	v1 := route.Group("/gobase/v1")
 	{
 		v1.Use(ginprom.PromMiddleware(nil))
 
-		v1.GET("/ping", bizCtx.PingGin)
-		v1.POST("/users", bizCtx.CreateUserGin)
+		v1.GET("/ping", s.Ping)
+		v1.POST("/users", s.CreateUser)
 	}
 
 	// metrics

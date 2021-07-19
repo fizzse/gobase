@@ -1,4 +1,4 @@
-package biz
+package rest
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 	"go.uber.org/zap"
 )
 
-func (b *SampleBiz) newRestHandler(ginCtx *gin.Context) *restHandler {
+func (s *Server) newRestHandler(ginCtx *gin.Context) *restHandler {
 	handler := &restHandler{
 		ginCtx:     ginCtx,
 		startTime:  time.Now(),
-		logger:     b.logger,
+		logger:     s.bizCtx.Logger(),
 		statusCode: http.StatusOK,
 	}
 
@@ -105,6 +105,7 @@ func (h *restHandler) logging() {
 	duration := time.Since(h.startTime)
 
 	logging(h.opName,
+		"traceId", h.TraceId,
 		"req", h.req,
 		"res", h.Data,
 		"startTime", h.startTime,

@@ -145,7 +145,7 @@ func loadRedisConfig() *redis.Config {
 
 func loadConsumerConfig() *consumer.WorkerConfig {
 	config := &consumer.WorkerConfig{
-		Broker:      []string{"127.0.0.1:9200"},
+		Broker:      []string{"127.0.0.1:9092"},
 		WorkerCount: 3,
 		Topic:       "hello",
 	}
