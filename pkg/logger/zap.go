@@ -15,13 +15,16 @@ const (
 )
 
 type Config struct {
-	Drive        string
-	Path         string
-	File         string
-	MaxAge       time.Duration
-	RotationTime time.Duration
-	MaxFileSize  int
-	Level        int8
+	Drive       string        `yaml:"drive"`       // 驱动
+	Path        string        `yaml:"path"`        // 路径
+	File        string        `yaml:"file"`        // 文件名
+	MaxAge      time.Duration `yaml:"maxAge"`      // 最大保存时间
+	MaxBackups  int           `yaml:"maxBackups"`  // 最大文件个数
+	MaxFileSize int           `yaml:"maxFileSize"` // 文件大小
+	Level       int8          `yaml:"level"`       // 级别
+	Compress    bool          `yaml:"compress"`    // 是否压缩
+	LocalTime   bool          `yaml:"localTime"`   // 是否使用当地时间
+	//RotationTime time.Duration `yaml:"rotationTime"` //
 }
 
 func New(cfg *Config) (*zap.SugaredLogger, error) {
@@ -47,8 +50,8 @@ func NewZapLogger(cfg *Config) (*zap.SugaredLogger, error) {
 		MaxSize:    cfg.MaxFileSize,                          // megabytes
 		MaxBackups: 10000,
 		MaxAge:     int(cfg.MaxAge / 24), //days
-		Compress:   false,                // disabled by default
-		LocalTime:  true,
+		Compress:   cfg.Compress,         // disabled by default
+		LocalTime:  cfg.LocalTime,
 	})
 	core := zapcore.NewCore(
 		zapcore.NewJSONEncoder(enConfig), //编码器配置
