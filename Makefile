@@ -70,3 +70,10 @@ run: service
 
 deps:
 	$(GOCMD) mod tidy
+
+## rename
+RENAME_TOOLS=tools/rename.go
+NEW_NAME = github.com/fizzse/gobase
+rename:
+	@echo [new name]: $(NEW_NAME)
+	$(GOCMD) run $(RENAME_TOOLS) $(NEW_NAME)

@@ -4,7 +4,7 @@
 
 ## 如何使用
 - 【新建git仓库】以此项目为模板
-- 【rename project】执行命令 (go run tools/rename.go {newname})
+- 【rename project】执行命令 make rename NEW_NAME={new_name}
 - 【编译】 make
 - 【生成di】 make wire
 - 【生成pb】 make pb
