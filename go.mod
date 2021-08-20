@@ -4,35 +4,25 @@ go 1.16
 
 require (
 	github.com/DeanThompson/ginpprof v0.0.0-20201112072838-007b1e56b2e1
-	github.com/HdrHistogram/hdrhistogram-go v1.1.0 // indirect
-	github.com/chenjiandongx/ginprom v0.0.0-20201217063207-fe11b7f55a35
-	github.com/gin-gonic/gin v1.7.1
-	github.com/go-playground/validator/v10 v10.5.0 // indirect
-	github.com/go-redis/redis/v8 v8.8.2
-	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/HdrHistogram/hdrhistogram-go v1.1.1 // indirect
+	github.com/chenjiandongx/ginprom v0.0.0-20210617023641-6c809602c38a
+	github.com/gin-gonic/gin v1.7.4
+	github.com/go-redis/redis/v8 v8.11.3
 	github.com/google/wire v0.5.0
-	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190118093823-f849b5445de4
-	github.com/json-iterator/go v1.1.11 // indirect
-	github.com/leodido/go-urn v1.2.1 // indirect
-	github.com/opentracing/opentracing-go v1.1.0
+	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
+	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/client_golang v1.10.0
-	github.com/segmentio/kafka-go v0.4.15
-	github.com/spf13/viper v1.7.1
-	github.com/uber/jaeger-client-go v2.28.0+incompatible
+	github.com/prometheus/client_golang v1.11.0
+	github.com/segmentio/kafka-go v0.4.17
+	github.com/spf13/viper v1.8.1
+	github.com/uber/jaeger-client-go v2.29.1+incompatible
 	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
-	github.com/ugorji/go v1.2.5 // indirect
-	go.uber.org/zap v1.16.0
-	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b // indirect
+	go.uber.org/zap v1.19.0
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/sys v0.0.0-20210426230700-d19ff857e887 // indirect
-	golang.org/x/text v0.3.6 // indirect
-	golang.org/x/tools v0.0.0-20210106214847-113979e3529a // indirect
-	google.golang.org/grpc v1.37.0
-	google.golang.org/protobuf v1.26.0
+	google.golang.org/grpc v1.40.0
+	google.golang.org/protobuf v1.27.1
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
-	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gorm.io/driver/clickhouse v0.1.0
-	gorm.io/driver/mysql v1.0.6
-	gorm.io/gorm v1.21.9
+	gorm.io/driver/clickhouse v0.2.1
+	gorm.io/driver/mysql v1.1.2
+	gorm.io/gorm v1.21.13
 )
