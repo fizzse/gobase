@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/DeanThompson/ginpprof"
 	"github.com/chenjiandongx/ginprom"
@@ -48,7 +49,10 @@ func (s *Server) Run() (err error) {
 	return err
 }
 
-func (s *Server) Stop(ctx context.Context) (err error) {
+func (s *Server) Stop() (err error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second) // TODO timeout config
+	defer cancel()
+
 	err = s.srv.Shutdown(ctx)
 	return
 }

@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/opentracing/opentracing-go"
 
@@ -58,15 +57,13 @@ func (a *App) Run(ctx context.Context) error {
 	// http
 	wg.Go(func() error {
 		defer func() {
-			a.logger.Infow("rest server safe exiting")
+			a.logger.Infof("server %s safe exiting", "rest") // logger
 		}()
 
 		go func() {
 			select {
 			case <-ctx.Done():
-				timeoutCtx, timeoutCancel := context.WithTimeout(context.Background(), 1*time.Second)
-				defer timeoutCancel()
-				_ = a.RestServer.Stop(timeoutCtx)
+				_ = a.RestServer.Stop()
 				return
 			}
 		}()
@@ -78,6 +75,10 @@ func (a *App) Run(ctx context.Context) error {
 
 	// grpc server
 	wg.Go(func() error {
+		defer func() {
+			a.logger.Infof("server %s safe exiting", "grpc")
+		}()
+
 		go func() {
 			select {
 			case <-ctx.Done():
@@ -92,6 +93,10 @@ func (a *App) Run(ctx context.Context) error {
 
 	// consumer worker
 	wg.Go(func() error {
+		defer func() {
+			a.logger.Infof("server %s safe exiting", "consumer")
+		}()
+
 		go func() {
 			select {
 			case <-ctx.Done():
