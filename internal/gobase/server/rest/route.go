@@ -15,9 +15,10 @@ import (
 )
 
 type Config struct {
-	Host       string `json:"host" yaml:"host"`
-	Port       int    `json:"port" yaml:"port"`
-	DebugModel bool   `json:"debugModel" yaml:"debugModel"`
+	Host       string `yaml:"host"`
+	Port       int    `yaml:"port"`
+	DebugModel bool   `yaml:"debugModel"`
+	Name       string `yaml:"name"`
 }
 
 type Server struct {
@@ -59,7 +60,9 @@ func (s *Server) Stop() (err error) {
 
 func (s *Server) initRouter(bizCtx *biz.SampleBiz) *gin.Engine {
 	route := gin.Default()
-	v1 := route.Group("/gobase/v1")
+	r := route.Group(s.cfg.Name)
+	v1 := r.Group("/v1")
+	//v1 := route.Group("/gobase/v1")
 	{
 		v1.Use(ginprom.PromMiddleware(nil))
 
