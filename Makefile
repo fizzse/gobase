@@ -73,7 +73,7 @@ deps:
 
 ## rename
 RENAME_TOOLS=tools/rename.go
-NEW_NAME = github.com/fizzse/gobase
+MOD = github.com/fizzse/gobase
 rename:
-	@echo [new name]: $(NEW_NAME)
-	$(GOCMD) run $(RENAME_TOOLS) $(NEW_NAME)
+	@echo [new name]: $(MOD)
+	$(GOCMD) run $(RENAME_TOOLS) $(MOD)

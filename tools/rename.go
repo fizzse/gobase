@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"io/ioutil"
 	"log"
@@ -37,8 +38,7 @@ func replaceFile(file, oldStr, newStr string) (err error) {
 }
 
 func findFiles(name string) ([]string, error) {
-	//fileGo := `find . -name "*.go"`
-	cmd := "find . -name "
+	cmd := "find . -name " //fileGo := `find . -name "*.go"`
 	cmd += name
 
 	cmder := exec.Command("bash", "-c", cmd)
@@ -52,20 +52,45 @@ func findFiles(name string) ([]string, error) {
 	return files, nil
 }
 
-func main() {
-	// 读取命令行参数
-	if len(os.Args) != 2 {
-		log.Fatal("args incorrectt")
+func getOldName() (oldName string) { // 读取 go mod文件
+	oldName = ""
+	fs, err := os.Open("go.mod")
+	if err != nil {
+		return
 	}
+
+	defer fs.Close()
+	buff := bufio.NewReader(fs)
+	content, _, err := buff.ReadLine()
+	if err != nil {
+		return
+	}
+
+	subs := strings.Split(string(content), " ")
+	oldName = subs[1]
+	return oldName
+}
+
+func getNewName(args []string) string {
+	return args[1]
+}
+
+func main() {
+	if len(os.Args) != 2 { // 读取命令行参数
+		log.Fatal("args incorrect")
+	}
+
+	newName := getNewName(os.Args)
+	oldName := getOldName()
 
 	// find files *.go, *.proto go.mod
 	goFile := `"*.go"`
 	pbFile := `"*.proto"`
-	gomod := "go.mod"
-	strs := []string{goFile, pbFile, gomod}
+	modFile := "go.mod"
+	typeFiles := []string{goFile, pbFile, modFile}
 
 	var allFiles []string
-	for _, str := range strs {
+	for _, str := range typeFiles {
 		files, err := findFiles(str)
 		if err != nil {
 			log.Fatal("find file failed: ", err)
@@ -77,9 +102,6 @@ func main() {
 			}
 		}
 	}
-
-	oldName := "github.com/fizzse/gobase"
-	newName := os.Args[1]
 
 	// 替换文件
 	for _, file := range allFiles {
