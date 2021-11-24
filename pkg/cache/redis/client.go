@@ -116,6 +116,7 @@ func NewSentinelCli(cfg *Config) (cli *redis.ClusterClient, cleanFunc func(), er
 		DialTimeout:   time.Second,
 		ReadTimeout:   time.Second,
 		WriteTimeout:  time.Second,
+		RouteByLatency: true,
 		PoolSize:      20,
 		MinIdleConns:  10,
 	}
