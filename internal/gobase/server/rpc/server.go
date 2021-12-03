@@ -54,7 +54,16 @@ type Server struct {
 	bizCtx *biz.SampleBiz
 }
 
-func (s *Server) Run() error {
+func (s *Server) register() (err error) {
+	return
+}
+
+func (s *Server) Run() (err error) {
+	err = s.register()
+	if err != nil {
+		return
+	}
+
 	return s.srv.Serve(s.Listen)
 }
 

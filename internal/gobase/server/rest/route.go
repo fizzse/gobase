@@ -45,7 +45,16 @@ func New(cfg *Config, bizCtx *biz.SampleBiz) (instance *Server, err error) {
 	return
 }
 
+func (s *Server) register() (err error) {
+	return
+}
+
 func (s *Server) Run() (err error) {
+	err = s.register()
+	if err != nil {
+		return
+	}
+
 	err = s.srv.ListenAndServe()
 	return err
 }
@@ -68,6 +77,7 @@ func (s *Server) initRouter(bizCtx *biz.SampleBiz) *gin.Engine {
 
 		v1.GET("/ping", s.Ping)
 		v1.POST("/users", s.CreateUser)
+		v1.POST("/error", s.MockError)
 	}
 
 	// metrics

@@ -8,6 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
+
+	qerror "github.com/fizzse/gobase/pkg/error"
+	pbBasev1 "github.com/fizzse/gobase/protoc/gobase/v1"
 )
 
 func (s *Server) newRestHandler(ginCtx *gin.Context) *restHandler {
@@ -25,6 +28,7 @@ func (s *Server) newRestHandler(ginCtx *gin.Context) *restHandler {
 // RestReply http 导出
 type RestReply struct {
 	Code      int         `json:"code"`
+	Reason    string      `json:"reason"`
 	Msg       string      `json:"msg"`
 	TraceId   string      `json:"traceId"`
 	Timestamp int64       `json:"timestamp"`
@@ -45,6 +49,31 @@ type restHandler struct {
 	span       opentracing.Span
 
 	RestReply
+}
+
+type ValidatorStruct interface {
+	Validate() error
+}
+
+func (h *restHandler) ShouldBindJSON(req interface{}) (err error) {
+	h.req = req
+	err = h.ginCtx.ShouldBindJSON(req)
+	if err != nil {
+		err = qerror.BadRequest(pbBasev1.ERR_CODE_INPUT_DATA_FORMAT_ERROR.String(), err.Error())
+		h.err = err
+		return
+	}
+
+	if v, ok := req.(ValidatorStruct); ok { // 参数验证
+		err = v.Validate()
+		if err != nil {
+			err = qerror.BadRequest(pbBasev1.ERR_CODE_INPUT_DATA_FORMAT_ERROR.String(), err.Error())
+			h.err = err
+			return
+		}
+	}
+
+	return
 }
 
 func (h *restHandler) preTrace() {

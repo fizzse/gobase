@@ -24,6 +24,6 @@ func (d *SampleDao) QueryUser(ctx context.Context, cond *model.User) (user *mode
 	}
 
 	err = queryFilter.First(user).Error
-	err = d.convertNotFoundError(pbBasev1.ERR_CODE_USER_NOT_EXISTS, err)
+	err = d.ConvertNotFoundError(pbBasev1.ERR_CODE_USER_NOT_EXISTS, err)
 	return user, err
 }

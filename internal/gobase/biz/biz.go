@@ -53,6 +53,10 @@ type SampleBiz struct {
 	pbBasev1.UnimplementedGobaseServer // FIXME 默认实现所有api
 }
 
+func (b *SampleBiz) GetDao() *dao.SampleDao {
+	return b.daoCtx
+}
+
 func (b *SampleBiz) Close() {
 	b.daoCtx.Close()
 }

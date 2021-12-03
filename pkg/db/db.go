@@ -33,11 +33,10 @@ const (
 	ClickhouseDrive = "clickhouse"
 )
 
-func NewConn(option *Config) (*DbCtx, func(), error) {
+func NewConn(option *Config) (dbCtx *DbCtx, clean func(), err error) {
 	var db *gorm.DB
-	var err error
-	var clean func()
-	dbCtx := &DbCtx{}
+
+	dbCtx = &DbCtx{}
 	switch option.Drive {
 	case MysqlDrive:
 		db, clean, err = newMysqlConn(option)

@@ -23,9 +23,7 @@ func (s *Server) CreateUser(c *gin.Context) {
 	defer h.done()
 
 	req := &pbBasev1.CreateUserReq{}
-	h.err = c.Bind(req)
-	h.req = req
-
+	h.err = h.ShouldBindJSON(req)
 	if h.err != nil {
 		h.Code = http.StatusBadRequest
 		return
@@ -33,4 +31,10 @@ func (s *Server) CreateUser(c *gin.Context) {
 
 	h.Data, h.err = s.bizCtx.CreateUser(c.Request.Context(), req)
 	return
+}
+
+func (s *Server) MockError(c *gin.Context) {
+	h := s.newRestHandler(c)
+	defer h.done()
+	h.err = s.bizCtx.GetDao().MockNotFoundError()
 }
