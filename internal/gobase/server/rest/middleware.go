@@ -101,18 +101,18 @@ func (h *restHandler) done() {
 	h.endTime = time.Now()
 
 	h.Code = 200
+	h.Reason = "success"
 	h.Msg = "success"
 	h.Timestamp = h.endTime.Unix()
 
 	if h.err != nil {
-		if h.statusCode == http.StatusOK {
-			h.statusCode = http.StatusServiceUnavailable
-		}
+		h.statusCode = qerror.Code(h.err)
 
-		// FIXME code 与 msg 的设定
-		h.Code = http.StatusServiceUnavailable
-		h.Msg = h.err.Error()
-		h.Msg = "parse failed"
+		reason := qerror.Reason(h.err)
+		code := pbBasev1.ERR_CODE_value[reason]
+		h.Code = int(code)
+		h.Reason = reason
+		h.Msg = qerror.Message(h.err)
 	}
 
 	h.TraceId = fmt.Sprintf("%v", h.span)

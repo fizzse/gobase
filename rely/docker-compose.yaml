@@ -16,8 +16,6 @@ services:
     container_name: redis
     command: redis-server --requirepass s
     network_mode: host
-    volumes:
-      - $PWD/redis_data:/data
     restart: always
 
   zookeeper:
