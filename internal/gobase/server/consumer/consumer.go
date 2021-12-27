@@ -4,10 +4,9 @@ import (
 	"context"
 
 	"github.com/fizzse/gobase/internal/gobase/biz"
+	"github.com/fizzse/gobase/pkg/mq/kafka"
 
 	"go.uber.org/zap"
-
-	"github.com/fizzse/gobase/pkg/mq/kafka"
 	"golang.org/x/sync/errgroup"
 )
 

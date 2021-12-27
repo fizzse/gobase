@@ -9,7 +9,7 @@ import (
 	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 
-	qerror "github.com/fizzse/gobase/pkg/error"
+	qerror "github.com/fizzse/gobase/pkg/errors"
 	pbBasev1 "github.com/fizzse/gobase/protoc/gobase/v1"
 )
 
