@@ -3,6 +3,7 @@ package biz
 import (
 	"context"
 	"encoding/json"
+	"sync"
 
 	"github.com/prometheus/client_golang/prometheus"
 
@@ -14,20 +15,28 @@ const (
 )
 
 var (
-	labels      = []string{"drive", "productKey", "status"}
-	MegCountReq = prometheus.NewCounterVec(
-		prometheus.CounterOpts{
-			Namespace: namespace,
-			Name:      "process_msg_count",
-			Help:      "Total number of message of iot device",
-		}, labels,
-	)
+	msgCounter     *prometheus.CounterVec
+	msgCounterOnce sync.Once
 )
 
 const (
 	statusOk     = "ok"
 	statusFailed = "failed"
 )
+
+func NewMetricCounter(name, help string, labels ...string) *metricCounter {
+	msgCounterOnce.Do(func() { // init in first call
+		msgCounter = prometheus.NewCounterVec(
+			prometheus.CounterOpts{
+				Namespace: namespace,
+				Name:      name, //   "process_msg_count",
+				Help:      help, // "Total number of message of iot device",
+			}, labels,
+		)
+	})
+
+	return &metricCounter{labels: labels, status: statusOk}
+}
 
 type metricCounter struct {
 	labels []string
@@ -36,11 +45,7 @@ type metricCounter struct {
 
 func (c *metricCounter) metric() {
 	lvs := c.labels
-	MegCountReq.WithLabelValues(lvs...).Inc()
-}
-
-func NewMetricCounter(labels ...string) *metricCounter {
-	return &metricCounter{labels: labels, status: statusOk}
+	msgCounter.WithLabelValues(lvs...).Inc()
 }
 
 // DealMsg kafka
@@ -56,7 +61,7 @@ func (b *SampleBiz) DealMsg(ctx context.Context, msg kafka.Event) (err error) { 
 		return err
 	}
 
-	m := NewMetricCounter(parsedMsg.Key)
+	m := NewMetricCounter("process_msg_count", "Total number of message of iot device", parsedMsg.Key)
 
 	defer func() {
 		if err != nil {
