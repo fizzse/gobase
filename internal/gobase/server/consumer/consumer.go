@@ -60,6 +60,10 @@ func (w *Worker) RecvMsg(ctx context.Context, msg kafka.Event) error {
 	return nil
 }
 
+func (w *Worker) Route() {
+
+}
+
 // Run FIXME 日志修改
 func (w *Worker) Run(ctx context.Context, handleFunc kafka.Handler) error {
 	eg, ctx := errgroup.WithContext(ctx)

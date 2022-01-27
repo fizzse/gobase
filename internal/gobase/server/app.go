@@ -40,6 +40,11 @@ func NewApp(h *rest.Server, g *rpc.Server, worker *consumer.Worker, logger *zap.
 	return
 }
 
+type IServer interface {
+	Run() error
+	Stop()
+}
+
 type App struct {
 	logger *zap.SugaredLogger
 	bizCtx biz.SampleBiz
@@ -47,7 +52,8 @@ type App struct {
 	RestServer     *rest.Server // http server
 	GrpcServer     *rpc.Server
 	ConsumerWorker *consumer.Worker //
-	Signal         chan os.Signal   // 监听信号 TODO grpc server
+	IServers       []IServer
+	Signal         chan os.Signal // 监听信号 TODO grpc server
 }
 
 func (a *App) Run(ctx context.Context) error {
@@ -63,7 +69,7 @@ func (a *App) Run(ctx context.Context) error {
 		go func() {
 			select {
 			case <-ctx.Done():
-				_ = a.RestServer.Stop()
+				a.RestServer.Stop()
 				return
 			}
 		}()

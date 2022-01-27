@@ -9,3 +9,7 @@ import (
 func (b *SampleBiz) DealMsg(ctx context.Context, msg kafka.Event) (err error) { // 回调函数
 	return
 }
+
+func (b *SampleBiz) DealMsg2(ctx context.Context, msg kafka.Event) (err error) { // 回调函数
+	return
+}

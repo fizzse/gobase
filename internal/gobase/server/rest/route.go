@@ -59,11 +59,11 @@ func (s *Server) Run() (err error) {
 	return err
 }
 
-func (s *Server) Stop() (err error) {
+func (s *Server) Stop() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second) // TODO timeout config
 	defer cancel()
 
-	err = s.srv.Shutdown(ctx)
+	_ = s.srv.Shutdown(ctx)
 	return
 }
 

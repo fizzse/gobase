@@ -69,4 +69,5 @@ func (s *Server) Run() (err error) {
 
 func (s *Server) Stop() {
 	s.srv.GracefulStop()
+	return
 }
