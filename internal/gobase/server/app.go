@@ -100,7 +100,7 @@ func (a *App) Run(ctx context.Context) error {
 		go func() {
 			select {
 			case <-ctx.Done():
-				a.ConsumerWorker.Close()
+				a.ConsumerWorker.Stop()
 			}
 		}()
 

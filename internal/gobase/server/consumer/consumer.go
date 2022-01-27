@@ -89,7 +89,7 @@ func (w *Worker) Run(ctx context.Context, handleFunc kafka.Handler) error {
 	return eg.Wait()
 }
 
-func (w *Worker) Close() {
+func (w *Worker) Stop() {
 	_ = w.sub.Close()
 	close(w.dataChan)
 }
