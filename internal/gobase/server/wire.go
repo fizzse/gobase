@@ -1,4 +1,6 @@
+//go:build wireinject
 // +build wireinject
+
 // The build tag makes sure the stub is not built in the final build.
 
 package server
@@ -25,7 +27,7 @@ var (
 	bizProvider      = wire.NewSet(biz.NewInstance)
 	grpcProvider     = wire.NewSet(rpc.New, loadGrpcConfig)
 	restProvider     = wire.NewSet(rest.New, loadRestConfig)
-	consumerProvider = wire.NewSet(consumer.NewWorker, loadConsumerConfig)
+	consumerProvider = wire.NewSet(consumer.NewScheduler, loadConsumerConfig)
 )
 
 func InitApp() (*App, func(), error) {

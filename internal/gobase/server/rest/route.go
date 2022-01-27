@@ -45,11 +45,11 @@ func New(cfg *Config, bizCtx *biz.SampleBiz) (instance *Server, err error) {
 	return
 }
 
-func (s *Server) register() (err error) {
-	return
+func (s *Server) Name() string {
+	return "rest"
 }
 
-func (s *Server) Run() (err error) {
+func (s *Server) Run(ctx context.Context) (err error) {
 	err = s.register()
 	if err != nil {
 		return
@@ -64,6 +64,10 @@ func (s *Server) Stop() {
 	defer cancel()
 
 	_ = s.srv.Shutdown(ctx)
+	return
+}
+
+func (s *Server) register() (err error) {
 	return
 }
 

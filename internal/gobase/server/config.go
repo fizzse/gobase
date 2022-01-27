@@ -143,13 +143,12 @@ func loadRedisConfig() *redis.Config {
 	return config
 }
 
-func loadConsumerConfig() *consumer.WorkerConfig {
-	config := &consumer.WorkerConfig{
-		Broker:      []string{"127.0.0.1:9092"},
-		WorkerCount: 3,
-		Topic:       "hello",
+func loadConsumerConfig() consumer.KafkaCfg {
+	config := consumer.KafkaCfg{
+		Broker: []string{"127.0.0.1:9092"},
 	}
-	if err := viper.UnmarshalKey("consumer", config); err != nil {
+
+	if err := viper.UnmarshalKey("consumer", &config); err != nil {
 		log.Printf("viper get: %s config failed %v : use defalut config\n", "consumer", err)
 	}
 

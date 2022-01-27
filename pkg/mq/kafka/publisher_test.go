@@ -9,7 +9,7 @@ import (
 
 func TestPublisher(t *testing.T) {
 	var (
-		testTopic   = "hello"
+		testTopic   = "sample-topic"
 		testBrokers = []string{"127.0.0.1:9092"}
 	)
 

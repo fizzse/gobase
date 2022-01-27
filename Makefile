@@ -37,7 +37,7 @@ BUILD_PB_CMD = protoc --experimental_allow_proto3_optional -I .\
 ## main函数文件
 SOURCE=cmd/gobase/main.go
 
-BINARY_NAME=goBase
+BINARY_NAME=srv ## you server name
 BINARY_UNIX=$(BINARY_NAME)
 
 .PHONY: env clean

@@ -72,8 +72,8 @@ func InitApp() (*App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	workerConfig := loadConsumerConfig()
-	worker, err := consumer.NewWorker(sugaredLogger, workerConfig, sampleBiz)
+	kafkaCfg := loadConsumerConfig()
+	scheduler, err := consumer.NewScheduler(sugaredLogger, kafkaCfg, sampleBiz)
 	if err != nil {
 		cleanup5()
 		cleanup4()
@@ -92,7 +92,7 @@ func InitApp() (*App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	app, cleanup7, err := NewApp(server, rpcServer, worker, sugaredLogger, tracer)
+	app, cleanup7, err := NewApp(server, rpcServer, scheduler, sugaredLogger, tracer)
 	if err != nil {
 		cleanup6()
 		cleanup5()
@@ -124,5 +124,5 @@ var (
 	bizProvider      = wire.NewSet(biz.NewInstance)
 	grpcProvider     = wire.NewSet(rpc.New, loadGrpcConfig)
 	restProvider     = wire.NewSet(rest.New, loadRestConfig)
-	consumerProvider = wire.NewSet(consumer.NewWorker, loadConsumerConfig)
+	consumerProvider = wire.NewSet(consumer.NewScheduler, loadConsumerConfig)
 )

@@ -1,6 +1,7 @@
 package rpc
 
 import (
+	"context"
 	"fmt"
 	"net"
 
@@ -54,11 +55,7 @@ type Server struct {
 	bizCtx *biz.SampleBiz
 }
 
-func (s *Server) register() (err error) {
-	return
-}
-
-func (s *Server) Run() (err error) {
+func (s *Server) Run(ctx context.Context) (err error) {
 	err = s.register()
 	if err != nil {
 		return
@@ -69,5 +66,13 @@ func (s *Server) Run() (err error) {
 
 func (s *Server) Stop() {
 	s.srv.GracefulStop()
+	return
+}
+
+func (s *Server) Name() string {
+	return "grpc"
+}
+
+func (s *Server) register() (err error) {
 	return
 }
