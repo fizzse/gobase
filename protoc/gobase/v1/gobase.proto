@@ -3,9 +3,13 @@ package gobase.v1;
 
 option go_package = "github.com/fizzse/gobase/protoc/gobase/v1;v1";
 
+// 示例如何引用别的pb文件
+import "gobase/v1/other.proto";
+
 message CreateUserReq {
   string name = 1;
   optional int64 age = 2;
+  WrapInt other = 3;
 }
 
 message UserInfo {

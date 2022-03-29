@@ -5,7 +5,7 @@ option go_package = "github.com/fizzse/gobase/protoc/gobase/v1;v1";
 
 // 错误码列表
 enum ERR_CODE {
-  XX_CODE = 0; // 0 占位
+  ERR_CODE_NONE = 0; // 0 占位
   USER_NOT_EXISTS = 1001;
   USER_ALREADY_EXISTS = 1002;
   EMAIL_FORMAT_ERROR = 1003;
