@@ -8,6 +8,7 @@ package server
 import (
 	"github.com/fizzse/gobase/internal/gobase/biz"
 	"github.com/fizzse/gobase/internal/gobase/dao"
+	"github.com/fizzse/gobase/internal/gobase/option"
 	"github.com/fizzse/gobase/internal/gobase/server/consumer"
 	"github.com/fizzse/gobase/internal/gobase/server/rest"
 	"github.com/fizzse/gobase/internal/gobase/server/rpc"
@@ -19,15 +20,15 @@ import (
 )
 
 var (
-	logProvider      = wire.NewSet(logger.New, loadLoggerConfig)
-	traceProvider    = wire.NewSet(trace.New, loadTraceConfig)
-	dbProvider       = wire.NewSet(db.NewConn, loadDbConfig)
-	redisProvider    = wire.NewSet(redis.NewClient, loadRedisConfig)
+	logProvider      = wire.NewSet(logger.New, option.LoadLoggerConfig)
+	traceProvider    = wire.NewSet(trace.New, option.LoadTraceConfig)
+	dbProvider       = wire.NewSet(db.NewConn, option.LoadDbConfig)
+	redisProvider    = wire.NewSet(redis.NewClient, option.LoadRedisConfig)
 	daoProvider      = wire.NewSet(dao.NewInstance)
 	bizProvider      = wire.NewSet(biz.NewInstance)
-	grpcProvider     = wire.NewSet(rpc.New, loadGrpcConfig)
-	restProvider     = wire.NewSet(rest.New, loadRestConfig)
-	consumerProvider = wire.NewSet(consumer.NewScheduler, loadConsumerConfig)
+	grpcProvider     = wire.NewSet(rpc.New, option.LoadGrpcConfig)
+	restProvider     = wire.NewSet(rest.New, option.LoadRestConfig)
+	consumerProvider = wire.NewSet(consumer.NewScheduler, option.LoadConsumerConfig)
 )
 
 func InitApp() (*App, func(), error) {
@@ -40,5 +41,6 @@ func InitApp() (*App, func(), error) {
 		bizProvider,
 		restProvider,
 		grpcProvider,
-		consumerProvider, NewApp))
+		consumerProvider,
+		NewApp))
 }

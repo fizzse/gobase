@@ -9,6 +9,7 @@ package server
 import (
 	"github.com/fizzse/gobase/internal/gobase/biz"
 	"github.com/fizzse/gobase/internal/gobase/dao"
+	"github.com/fizzse/gobase/internal/gobase/option"
 	"github.com/fizzse/gobase/internal/gobase/server/consumer"
 	"github.com/fizzse/gobase/internal/gobase/server/rest"
 	"github.com/fizzse/gobase/internal/gobase/server/rpc"
@@ -22,13 +23,13 @@ import (
 // Injectors from wire.go:
 
 func InitApp() (*App, func(), error) {
-	config := loadRestConfig()
-	dbConfig := loadDbConfig()
+	config := option.LoadRestConfig()
+	dbConfig := option.LoadDbConfig()
 	dbCtx, cleanup, err := db.NewConn(dbConfig)
 	if err != nil {
 		return nil, nil, err
 	}
-	redisConfig := loadRedisConfig()
+	redisConfig := option.LoadRedisConfig()
 	client, cleanup2, err := redis.NewClient(redisConfig)
 	if err != nil {
 		cleanup()
@@ -40,7 +41,7 @@ func InitApp() (*App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	loggerConfig := loadLoggerConfig()
+	loggerConfig := option.LoadLoggerConfig()
 	sugaredLogger, err := logger.New(loggerConfig)
 	if err != nil {
 		cleanup3()
@@ -63,7 +64,7 @@ func InitApp() (*App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	rpcConfig := loadGrpcConfig()
+	rpcConfig := option.LoadGrpcConfig()
 	rpcServer, cleanup5, err := rpc.New(rpcConfig, sampleBiz)
 	if err != nil {
 		cleanup4()
@@ -72,7 +73,7 @@ func InitApp() (*App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	kafkaCfg := loadConsumerConfig()
+	kafkaCfg := option.LoadConsumerConfig()
 	scheduler, err := consumer.NewScheduler(sugaredLogger, kafkaCfg, sampleBiz)
 	if err != nil {
 		cleanup5()
@@ -82,7 +83,7 @@ func InitApp() (*App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	traceConfig := loadTraceConfig()
+	traceConfig := option.LoadTraceConfig()
 	tracer, cleanup6, err := trace.New(traceConfig)
 	if err != nil {
 		cleanup5()
@@ -116,13 +117,13 @@ func InitApp() (*App, func(), error) {
 // wire.go:
 
 var (
-	logProvider      = wire.NewSet(logger.New, loadLoggerConfig)
-	traceProvider    = wire.NewSet(trace.New, loadTraceConfig)
-	dbProvider       = wire.NewSet(db.NewConn, loadDbConfig)
-	redisProvider    = wire.NewSet(redis.NewClient, loadRedisConfig)
+	logProvider      = wire.NewSet(logger.New, option.LoadLoggerConfig)
+	traceProvider    = wire.NewSet(trace.New, option.LoadTraceConfig)
+	dbProvider       = wire.NewSet(db.NewConn, option.LoadDbConfig)
+	redisProvider    = wire.NewSet(redis.NewClient, option.LoadRedisConfig)
 	daoProvider      = wire.NewSet(dao.NewInstance)
 	bizProvider      = wire.NewSet(biz.NewInstance)
-	grpcProvider     = wire.NewSet(rpc.New, loadGrpcConfig)
-	restProvider     = wire.NewSet(rest.New, loadRestConfig)
-	consumerProvider = wire.NewSet(consumer.NewScheduler, loadConsumerConfig)
+	grpcProvider     = wire.NewSet(rpc.New, option.LoadGrpcConfig)
+	restProvider     = wire.NewSet(rest.New, option.LoadRestConfig)
+	consumerProvider = wire.NewSet(consumer.NewScheduler, option.LoadConsumerConfig)
 )

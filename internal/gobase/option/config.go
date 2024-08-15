@@ -1,4 +1,4 @@
-package server
+package option
 
 import (
 	"log"
@@ -46,7 +46,7 @@ func init() {
 	}
 }
 
-func loadTraceConfig() *trace.Config {
+func LoadTraceConfig() *trace.Config {
 	config := &trace.Config{
 		Agent:       "127.0.0.1:6831",
 		Sampling:    "http://127.0.0.1:5778/sampling",
@@ -65,7 +65,7 @@ func loadTraceConfig() *trace.Config {
 	return config
 }
 
-func loadLoggerConfig() *logger.Config {
+func LoadLoggerConfig() *logger.Config {
 	config := &logger.Config{Drive: logger.ZapStdDrive, Level: 0}
 
 	configType := "logger"
@@ -76,7 +76,7 @@ func loadLoggerConfig() *logger.Config {
 	return config
 }
 
-func loadRestConfig() *rest.Config {
+func LoadRestConfig() *rest.Config {
 	config := &rest.Config{
 		Host:       "0.0.0.0",
 		Port:       8080,
@@ -92,7 +92,7 @@ func loadRestConfig() *rest.Config {
 	return config
 }
 
-func loadGrpcConfig() *rpc.Config {
+func LoadGrpcConfig() *rpc.Config {
 	config := &rpc.Config{
 		Host:       "0.0.0.0",
 		Port:       8081,
@@ -108,7 +108,7 @@ func loadGrpcConfig() *rpc.Config {
 	return config
 }
 
-func loadDbConfig() *db.Config {
+func LoadDbConfig() *db.Config {
 	config := &db.Config{
 		Drive:    "mysql",
 		Address:  "127.0.0.1",
@@ -128,7 +128,7 @@ func loadDbConfig() *db.Config {
 	return config
 }
 
-func loadRedisConfig() *redis.Config {
+func LoadRedisConfig() *redis.Config {
 	config := &redis.Config{}
 	config.Mode = redis.ModeSingle
 	config.Single.Addr = "127.0.0.1:6379"
@@ -143,7 +143,7 @@ func loadRedisConfig() *redis.Config {
 	return config
 }
 
-func loadConsumerConfig() consumer.KafkaCfg {
+func LoadConsumerConfig() consumer.KafkaCfg {
 	config := consumer.KafkaCfg{
 		Broker: []string{"127.0.0.1:9092"},
 	}
