@@ -15,14 +15,8 @@ type Subscriber struct {
 // SubscriberOption is a subscriber option.
 type SubscriberOption func(*Subscriber)
 
-func ConsumerGroup(id string) SubscriberOption {
-	return func(o *Subscriber) {
-		o.groupId = id
-	}
-}
-
 // NewSubscriber new a kafka subscriber.
-func NewSubscriber(topic string, brokers []string, opts ...SubscriberOption) *Subscriber {
+func NewSubscriber(config *Config, opts ...SubscriberOption) *Subscriber {
 	sub := &Subscriber{}
 	for _, o := range opts {
 		o(sub)
@@ -32,9 +26,9 @@ func NewSubscriber(topic string, brokers []string, opts ...SubscriberOption) *Su
 	dialer.Timeout = 2 * time.Second
 
 	sub.reader = kafka.NewReader(kafka.ReaderConfig{
-		Topic:   topic,
+		Topic:   config.Topic,
 		GroupID: sub.groupId,
-		Brokers: brokers,
+		Brokers: config.Brokers,
 		MaxWait: 2 * time.Second,
 		Dialer:  dialer,
 	})

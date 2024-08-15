@@ -17,19 +17,14 @@ import (
  * offset全提交 FIXME
  */
 
-type KafkaCfg struct {
-	Broker  []string `yaml:"broker"`
-	GroupId string   `yaml:"groupId"`
-}
-
 type Scheduler struct {
 	BizCtx   *biz.SampleBiz
 	logger   *zap.SugaredLogger
-	conf     KafkaCfg
+	conf     *kafka.Config
 	connects map[string]*Worker
 }
 
-func NewScheduler(logger *zap.SugaredLogger, conf KafkaCfg, bizCtx *biz.SampleBiz) (srv *Scheduler, err error) {
+func NewScheduler(logger *zap.SugaredLogger, conf *kafka.Config, bizCtx *biz.SampleBiz) (srv *Scheduler, err error) {
 	srv = &Scheduler{
 		logger:   logger,
 		BizCtx:   bizCtx,
@@ -87,7 +82,7 @@ func (s *Scheduler) Sub(topic string, handler kafka.Handler, workerCnt, bufSize 
 	}
 
 	conf := WorkerConfig{
-		KafkaCfg:    s.conf,
+		KafkaConfig: s.conf,
 		WorkerCount: workerCnt,
 		BufSize:     bufSize,
 		Topic:       topic,
@@ -103,12 +98,11 @@ func (s *Scheduler) Sub(topic string, handler kafka.Handler, workerCnt, bufSize 
 }
 
 type WorkerConfig struct {
-	KafkaCfg
-
-	Topic       string `yaml:"topic"`
-	BufSize     int    `yaml:"bufSize"`
-	WorkerCount int    `yaml:"workerCount"`
-	stopped     bool
+	KafkaConfig *kafka.Config `yaml:"kafka_config"`
+	Topic       string        `yaml:"topic"`
+	BufSize     int           `yaml:"bufSize"`
+	WorkerCount int           `yaml:"workerCount"`
+	stopped     bool          `yaml:"_"`
 }
 
 type Worker struct {
@@ -121,7 +115,7 @@ type Worker struct {
 }
 
 func NewWorker(logger *zap.SugaredLogger, conf WorkerConfig, handleFunc kafka.Handler) (*Worker, error) {
-	sub := kafka.NewSubscriber(conf.Topic, conf.Broker, kafka.ConsumerGroup(conf.GroupId))
+	sub := kafka.NewSubscriber(conf.KafkaConfig)
 	worker := &Worker{
 		WorkerConfig: conf,
 		logger:       logger,

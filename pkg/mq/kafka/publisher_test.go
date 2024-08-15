@@ -13,7 +13,7 @@ func TestPublisher(t *testing.T) {
 		testBrokers = []string{"127.0.0.1:9092"}
 	)
 
-	pub := NewPublisher(testBrokers)
+	pub := NewPublisher(&Config{Brokers: testBrokers})
 	defer pub.Close()
 
 	log.Println(time.Now())

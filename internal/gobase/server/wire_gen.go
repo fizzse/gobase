@@ -73,8 +73,8 @@ func InitApp() (*App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	kafkaCfg := option.LoadConsumerConfig()
-	scheduler, err := consumer.NewScheduler(sugaredLogger, kafkaCfg, sampleBiz)
+	kafkaConfig := option.LoadConsumerConfig()
+	scheduler, err := consumer.NewScheduler(sugaredLogger, kafkaConfig, sampleBiz)
 	if err != nil {
 		cleanup5()
 		cleanup4()

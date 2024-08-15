@@ -2,6 +2,12 @@ package kafka
 
 import "context"
 
+type Config struct {
+	Brokers []string `yaml:"brokers"`
+	Topic   string   `yaml:"topic"`
+	GroupId string   `yaml:"groupId"`
+}
+
 type Event struct {
 	// Key sets the key of the message for routing policy
 	Key string

@@ -76,9 +76,9 @@ type Publisher struct {
 }
 
 // NewPublisher new a kafka publisher.
-func NewPublisher(brokers []string, opts ...PublisherOption) *Publisher {
+func NewPublisher(config *Config, opts ...PublisherOption) *Publisher {
 	pub := &Publisher{
-		brokers:      brokers,
+		brokers:      config.Brokers,
 		readTimeout:  500 * time.Millisecond,
 		writeTimeout: 500 * time.Millisecond,
 		batchSize:    1,
@@ -90,7 +90,7 @@ func NewPublisher(brokers []string, opts ...PublisherOption) *Publisher {
 		o(pub)
 	}
 	pub.writer = &kafka.Writer{
-		Addr:         kafka.TCP(brokers...),
+		Addr:         kafka.TCP(config.Brokers...),
 		RequiredAcks: pub.requiredAcks,
 		ReadTimeout:  pub.readTimeout,
 		WriteTimeout: pub.writeTimeout,

@@ -4,13 +4,13 @@ import (
 	"log"
 	"os"
 
-	"github.com/fizzse/gobase/internal/gobase/server/consumer"
 	"github.com/fizzse/gobase/internal/gobase/server/rest"
 	"github.com/fizzse/gobase/internal/gobase/server/rpc"
 
 	"github.com/fizzse/gobase/pkg/cache/redis"
 	"github.com/fizzse/gobase/pkg/db"
 	"github.com/fizzse/gobase/pkg/logger"
+	"github.com/fizzse/gobase/pkg/mq/kafka"
 	"github.com/fizzse/gobase/pkg/trace"
 	"github.com/spf13/viper"
 )
@@ -143,9 +143,9 @@ func LoadRedisConfig() *redis.Config {
 	return config
 }
 
-func LoadConsumerConfig() consumer.KafkaCfg {
-	config := consumer.KafkaCfg{
-		Broker: []string{"127.0.0.1:9092"},
+func LoadConsumerConfig() *kafka.Config {
+	config := &kafka.Config{
+		Brokers: []string{"127.0.0.1:9092"},
 	}
 
 	if err := viper.UnmarshalKey("consumer", &config); err != nil {

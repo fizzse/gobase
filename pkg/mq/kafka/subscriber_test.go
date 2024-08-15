@@ -12,7 +12,7 @@ func TestSubscriber(t *testing.T) {
 	groupId := "world"
 	broker := []string{"127.0.0.1:9200"}
 
-	r := NewSubscriber(topic, broker, ConsumerGroup(groupId))
+	r := NewSubscriber(&Config{Brokers: broker, Topic: topic, GroupId: groupId})
 
 	go func() {
 		err := r.Subscribe(context.Background(), func(ctx context.Context, event Event) error {
@@ -35,7 +35,7 @@ func TestSubscriber_ReadMessage(t *testing.T) {
 	groupId := "world"
 	broker := []string{"127.0.0.1:9200"}
 
-	r := NewSubscriber(topic, broker, ConsumerGroup(groupId))
+	r := NewSubscriber(&Config{Brokers: broker, Topic: topic, GroupId: groupId})
 
 	go func() {
 		for {
