@@ -1,12 +1,12 @@
 package option
 
 import (
+	"fmt"
 	"log"
 	"os"
 
 	"github.com/fizzse/gobase/internal/gobase/server/rest"
 	"github.com/fizzse/gobase/internal/gobase/server/rpc"
-
 	"github.com/fizzse/gobase/pkg/cache/redis"
 	"github.com/fizzse/gobase/pkg/db"
 	"github.com/fizzse/gobase/pkg/logger"
@@ -22,20 +22,20 @@ const (
 	testEnv = "test"
 )
 
-func init() {
-	// 读取环境变量 根据不同的环境变量 读不同的配置文件
+// GetClusterEnv default dev
+func GetClusterEnv() string {
 	env := os.Getenv(envKey)
-	configPath := "config/config.yaml"
-
-	switch env {
-	case prodEnv:
-		configPath = "config/prod.yaml"
-	case testEnv:
-		configPath = "config/test.yaml"
-	default:
-		configPath = "config/dev.yaml"
+	if env == "" {
+		env = "dev"
 	}
 
+	return env
+}
+
+func init() {
+	// 读取环境变量 根据不同的环境变量 读不同的配置文件
+	env := GetClusterEnv()
+	configPath := fmt.Sprintf("config/%s.yaml", env)
 	log.Printf("server get env: ENV_CLUSTER value: %s use config path: %s\n", env, configPath)
 
 	viper.SetConfigFile(configPath)
