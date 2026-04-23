@@ -27,12 +27,12 @@ func (s *Server) newRestHandler(ginCtx *gin.Context) *restHandler {
 
 // RestReply http 导出
 type RestReply struct {
-	Code      int         `json:"code"`
-	Reason    string      `json:"reason"`
-	Msg       string      `json:"msg"`
-	TraceId   string      `json:"traceId"`
-	Timestamp int64       `json:"timestamp"`
-	Data      interface{} `json:"data"`
+	Code      int    `json:"code"`
+	Reason    string `json:"reason"`
+	Msg       string `json:"msg"`
+	TraceId   string `json:"traceId"`
+	Timestamp int64  `json:"timestamp"`
+	Data      any    `json:"data"`
 }
 
 // 小写是因为这些字段不需要导出
@@ -41,7 +41,7 @@ type restHandler struct {
 	logger *zap.SugaredLogger
 
 	opName     string
-	req        interface{}
+	req        any
 	err        error
 	statusCode int
 	startTime  time.Time
@@ -55,7 +55,7 @@ type ValidatorStruct interface {
 	Validate() error
 }
 
-func (h *restHandler) ShouldBindJSON(req interface{}) (err error) {
+func (h *restHandler) ShouldBindJSON(req any) (err error) {
 	h.req = req
 	err = h.ginCtx.ShouldBindJSON(req)
 	if err != nil {
